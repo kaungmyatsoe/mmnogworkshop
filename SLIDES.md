@@ -8,81 +8,82 @@
 
 *   **Presenter:** [Your Name / Kaung Myat Soe]
 *   **Goal:** From zero to a running AI chat app in 2 hours.
-*   **Platform:** AGB Cloud (agbc.cloud) - Apache CloudStack Powering AI.
+*   **Platform:** AGB Cloud (agbc.cloud)
 
 ---
 
 ## Slide 2: Why AI on Kubernetes?
-*   **Scalability:** Auto-scale models using Horizontal Pod Autoscaler (HPA).
-*   **Portability:** Use standard Helm charts and manifests anywhere.
-*   **Resource Efficiency:** Bin-packing models to maximize CPU/RAM utilization.
-*   **Security:** Multi-tenancy and network policies for model isolation.
+*   **Scalability:** Auto-scale models as demand grows.
+*   **Portability:** Run the same stack on any K8s cluster.
+*   **Resource Management:** Efficiently share CPUs/GPUs.
+*   **Self-Healing:** Kubernetes restarts models if they crash.
 
 ---
 
-## Slide 3: The Tech Stack
-*   **LLM Engine:** [Ollama](https://ollama.com) (Go-based, highly efficient C++ inference).
-*   **Backend:** [FastAPI](https://fastapi.tiangolo.com) (High performance, async Python).
-*   **Frontend:** Embedded HTML/JS (Zero-dependency, fast loading).
-*   **Infrastructure:** Kubernetes on AGB Cloud.
-*   **Monitoring:** Prometheus & Grafana stack.
-
----
-
-## Slide 4: Detailed Architecture
+## Slide 3: The Architecture
 ```mermaid
-graph TD
-    User([User's Browser]) -- "Port 8000 (LB/NodePort)" --> App[Chat App Pods]
-    subgraph "ai-workshop namespace"
-        App -- "Internal Service DNS" --> Ollama[Ollama Pod]
-        Ollama -- "Inference" --> Model[(Gemma3:1b)]
-    end
-    subgraph "monitoring namespace"
-        Prom[Prometheus] -- "Scrape" --> App
-        Prom -- "Scrape" --> Ollama
-        Grafana[Grafana] -- "Query" --> Prom
-    end
+graph LR
+    User[Browser] --> App[FastAPI App]
+    App --> Ollama[Ollama LLM Engine]
+    Ollama --> Model[Gemma3:1b]
 ```
+*   **Ollama:** The backend LLM server.
+*   **FastAPI:** The friendly web interface (built by us!).
 
 ---
 
-## Slide 5: Handling AGB Cloud Networking
-*   **Challenge:** Cloud LoadBalancers can be slow to provision in lite environments.
-*   **Solution:** **NodePort Access**.
-*   **Fixed Ports:** 
-    *   `30706` -> Chat App (Public Port 8000)
-    *   `31856` -> Grafana (Public Port 3000)
-*   **Port Forwarding:** Link Public IPs to these internal ports for instant access.
+## Slide 4: Our AI Model
+**Model:** `gemma3:1b`
+*   **Size:** ~815MB
+*   **Speed:** Optimized for CPU-only inference.
+*   **Capability:** General-purpose chat, summarization, and coding assistant.
 
 ---
 
-## Slide 6: Model Tuning for Performance
-*   **Model:** `gemma3:1b` (815MB) - Ideal for CPU-only environments.
-*   **Resource Limits:** 
-    *   Ollama: **6Gi memory limit** to prevent OOM errors during high concurrency.
-    *   Chat App: **512Mi memory limit** for stability.
-*   **Scaling:** HPA triggers at **60% CPU utilization**.
+## Slide 5: Workshop Roadmap
+1.  **Lab 00:** Tool Check (`kubectl`, `docker`)
+2.  **Lab 01:** Connect to **AGB Cloud**
+3.  **Lab 02:** Run **Ollama** & Download LLM
+4.  **Lab 03:** Deploy the **Chat UI**
+5.  **Lab 04:** **Auto-Scale** under load
+6.  **Lab 05:** **Monitor** performance
 
 ---
 
-## Slide 7: Monitoring & Observability
-*   **Metrics:** Tracking CPU cycles, memory pressure, and API response times.
-*   **Dashboards:** Real-time visibility into pod scaling events.
-*   **Self-Healing:** Readiness/Liveness probes ensure only healthy pods receive traffic.
+## Slide 6: Networking on AGB Cloud
+*   **Public IP:** Access your cluster via `165.101.220.54`.
+*   **NodePorts:** We use fixed ports to route traffic:
+    *   **30706:** Chat Application (mapped to port 8000).
+    *   **31856:** Grafana Dashboard (mapped to port 3000).
+*   **Port Forwarding:** Use the AGB Cloud Panel to link your Public IP to these internal ports.
 
 ---
 
-## Slide 8: Workshop Roadmap
-1.  **Lab 00:** Tool Check (`kubectl`, `helm`)
-2.  **Lab 01:** Connect to **AGB Cloud** Cluster
-3.  **Lab 02:** Deploy **Ollama** & Pull LLM
-4.  **Lab 03:** Deploy the **Chat UI** (Python Apps)
-5.  **Lab 04:** Stress Test & **Auto-Scaling**
-6.  **Lab 05:** **Monitoring** with Grafana
+## Slide 7: Monitoring with Prometheus
+*   **Prometheus:** Scrapes metrics from our pods every 30s.
+*   **Grafana:** Visualizes CPU, Memory, and Network traffic.
+*   **Why?** Essential for debugging performance bottlenecks and seeing scaling in action.
 
 ---
 
-## Slide 9: Ready? Let's go!
+## Slide 8: Scaling with HPA
+*   **The HPA (Horizontal Pod Autoscaler)**:
+    *   Watches CPU usage.
+    *   If CPU > 60%, it spins up more replicas (Max: 8).
+    *   Once load drops, it scales back down (Min: 2).
+*   **In Action:** We'll use `hey` to stress-test our chat app!
+
+---
+
+## Slide 9: Troubleshooting 101
+*   **Pod status:** `kubectl get pods`
+*   **Pod logs:** `kubectl logs -l app=chat-app`
+*   **Resource usage:** `kubectl top pods`
+*   **Metrics missing?** Apply the `--kubelet-insecure-tls` patch!
+
+---
+
+## Slide 10: Ready? Let's go!
 *   **Repo:** https://github.com/kaungmyatsoe/mmnogworkshop.git
-*   **Action:** Start with `labs/lab-00-prerequisites.md`
-*   **Tip:** Watch your pod status with `kubectl get pods -n ai-workshop -w`!
+*   **Facilitators:** We are here to help!
+*   **First Step:** Open `labs/lab-00-prerequisites.md`
