@@ -54,7 +54,7 @@ graph LR
 3.  **Lab 02:** Run **Ollama** & Download LLM
 4.  **Lab 03:** Deploy the **Chat UI**
 5.  **Lab 04:** **Auto-Scale** under load
-6.  **Lab 05:** **Monitor** performance
+6.  **Lab 05:** **Monitor** performance (Pre-installed!)
 
 ---
 
@@ -68,6 +68,7 @@ graph LR
 ---
 
 ## Slide 7: Monitoring with Prometheus
+*   **Auto-Deployed:** Our `setup.sh` installs the full stack for you.
 *   **Prometheus:** Scrapes metrics from our pods every 30s.
 *   **Grafana:** Visualizes CPU, Memory, and Network traffic.
 *   **Why?** Essential for debugging performance bottlenecks and seeing scaling in action.

@@ -1,7 +1,9 @@
 # Lab 05 — Monitoring with Prometheus & Grafana
 
 **Duration:** ~15 minutes  
-**Goal:** Install kube-prometheus-stack via Helm and explore metrics dashboards for the cluster, Ollama, and the chat app.
+**Goal:** Explore Grafana dashboards, visualize AI model performance, and understand how Prometheus scrapes metrics.
+
+> 🚀 **Note:** The `setup.sh` script installs the monitoring stack automatically. You can skip Section 1 and 2 if you ran the full setup!
 
 ---
 

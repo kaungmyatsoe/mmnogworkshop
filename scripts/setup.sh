@@ -108,6 +108,20 @@ kubectl apply -f "$K8S_DIR/04-app-deployment.yaml"
 kubectl apply -f "$K8S_DIR/05-app-service.yaml"
 ok "Chat app manifests applied"
 
+# ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
+if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
+  info "Installing Monitoring Stack (Prometheus & Grafana)..."
+  kubectl create namespace monitoring 2>/dev/null || true
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
+  helm repo update 2>/dev/null || true
+  helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
+    -n monitoring \
+    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 5m || true
+  ok "Monitoring stack installed"
+else
+  info "Monitoring stack already present, skipping installation"
+fi
+
 # ── Wait for pods ───────────────────────────────────────────────────────────────
 info "Waiting for Ollama pod to be ready (this may take 2-3 minutes)..."
 kubectl -n "$NAMESPACE" rollout status deployment/ollama --timeout=300s
