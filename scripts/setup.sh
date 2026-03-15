@@ -87,8 +87,17 @@ ok "Connected to cluster: $(kubectl config current-context)"
 # ── Apply manifests ─────────────────────────────────────────────────────────────
 info "Applying Kubernetes manifests..."
 
+# If namespace is terminating, wait for it
+if kubectl get ns "$NAMESPACE" 2>/dev/null | grep -q "Terminating"; then
+  warn "Namespace '$NAMESPACE' is currently terminating. Waiting for cleanup..."
+  while kubectl get ns "$NAMESPACE" 2>/dev/null | grep -q "Terminating"; do
+    sleep 5
+  done
+  ok "Cleanup complete"
+fi
+
 kubectl apply -f "$K8S_DIR/00-namespace.yaml"
-ok "Namespace '$NAMESPACE' created"
+ok "Namespace '$NAMESPACE' ready"
 
 kubectl apply -f "$K8S_DIR/01-ollama-deployment.yaml"
 kubectl apply -f "$K8S_DIR/02-ollama-service.yaml"
