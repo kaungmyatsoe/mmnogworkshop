@@ -60,12 +60,21 @@ if helm list -n ingress-nginx 2>/dev/null | grep -q ingress-nginx; then
   ok "Helm release removed"
 fi
 
+# ── Remove Services first (triggers cloud LB cleanup) ──────────────────────────
+for ns in ai-workshop monitoring ingress-nginx; do
+  if kubectl get namespace "$ns" &>/dev/null; then
+    info "Removing services in $ns..."
+    kubectl delete svc --all -n "$ns" --timeout=30s 2>/dev/null || true
+  fi
+done
+
 # ── Delete namespaces ───────────────────────────────────────────────────────────
 for ns in ai-workshop monitoring ingress-nginx; do
   if kubectl get namespace "$ns" &>/dev/null; then
-    info "Deleting namespace: $ns"
-    kubectl delete namespace "$ns" --timeout=120s
-    ok "Deleted namespace: $ns"
+    info "Deleting namespace: $ns (this may take 2-3 minutes for LoadBalancers)"
+    kubectl delete namespace "$ns" --timeout=180s || {
+      warn "Namespace deletion timed out, but it's continuing in the background."
+    }
   else
     info "Namespace '$ns' not found, skipping"
   fi
