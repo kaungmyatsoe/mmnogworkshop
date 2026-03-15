@@ -21,7 +21,7 @@ Welcome to the **Deploying Lite AI Applications on AGB Cloud** workshop! This gu
 2.  **Move it to your Downloads folder** (or keep track of where it is).
 3.  **Open your terminal** and enter the workshop directory:
     ```bash
-    cd MMNOG-Workshop
+    cd mmnogworkshop
     ```
 4.  **Run the Setup Script**: This script will automatically find your kubeconfig in the Downloads folder and connect to the cluster.
     ```bash

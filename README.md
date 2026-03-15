@@ -67,7 +67,7 @@ Full instructions → [Lab 00: Prerequisites](labs/lab-00-prerequisites.md)
 ## 📁 Repository Structure
 
 ```
-MMNOG-Workshop/
+mmnogworkshop/
 ├── README.md
 ├── labs/               # Step-by-step lab guides
 ├── k8s/                # Kubernetes manifests
