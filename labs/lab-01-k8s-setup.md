@@ -29,8 +29,11 @@ kubeconfig-<your-name>.yaml
 Place it in your kubeconfig directory:
 
 ```bash
-# Option A: Use directly in this session
+# Option A: Use directly in this session (Bash/WSL/macOS)
 export KUBECONFIG=~/Downloads/kubeconfig-<your-name>.yaml
+
+# Option A: Use directly in this session (Windows PowerShell)
+$env:KUBECONFIG="$HOME\Downloads\kubeconfig-<your-name>.yaml"
 
 # Option B: Merge with your existing kubeconfig (permanent)
 cp ~/Downloads/kubeconfig-<your-name>.yaml ~/.kube/agbc-workshop.yaml

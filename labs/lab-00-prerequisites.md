@@ -55,8 +55,10 @@ sudo mv kubectl /usr/local/bin/
 
 **Windows:**
 ```powershell
+# In PowerShell:
 winget install -e --id Kubernetes.kubectl
 ```
+> 💡 **Recommendation:** For Windows users, we highly recommend using **WSL2** or **Git Bash** for the rest of this workshop to avoid command syntax issues.
 
 Verify:
 ```bash

@@ -2,6 +2,12 @@
 
 Welcome to the **Deploying Lite AI Applications on AGB Cloud** workshop! This guide provides a step-by-step path to successfully completing the labs.
 
+> 🪟 **Note for Windows Users:**
+> This workshop assumes a **Bash** terminal. For a smooth experience, please use:
+> 1.  **WSL2 (Ubuntu)** (Recommended) OR
+> 2.  **Git Bash** (Included with Git for Windows).
+> *Native PowerShell or Command Prompt may require command adjustments.*
+
 ---
 
 ## 📅 Workshop Agenda
