@@ -19,9 +19,10 @@ Welcome to the **Deploying Lite AI Applications on AGB Cloud** workshop! This gu
 
 1.  **Download your Kubeconfig**: You should have received a `.yaml` file (e.g., `kubernete-VM0Z.yaml`) from the facilitator.
 2.  **Move it to your Downloads folder** (or keep track of where it is).
-3.  **Open your terminal** and enter the workshop directory:
+3.  **Clone the workshop and enter the directory**:
     ```bash
-    cd MMNOG-Workshop
+    git clone https://github.com/kaungmyatsoe/mmnogworkshop.git
+    cd mmnogworkshop
     ```
 4.  **Run the Setup Script**: This script will automatically find your kubeconfig in the Downloads folder and connect to the cluster.
     ```bash

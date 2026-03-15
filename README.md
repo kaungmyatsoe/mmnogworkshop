@@ -85,7 +85,7 @@ MMNOG-Workshop/
 export KUBECONFIG=~/Downloads/kubeconfig-<your-name>.yaml
 
 # 2. Clone and enter the repo
-git clone <repo-url> && cd MMNOG-Workshop
+git clone https://github.com/kaungmyatsoe/mmnogworkshop.git && cd mmnogworkshop
 
 # 3. Run the setup script (applies all manifests)
 ./scripts/setup.sh
