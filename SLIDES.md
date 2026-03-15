@@ -32,19 +32,22 @@ graph LR
 
 ---
 
-## Slide 4: Our AI Model & Stability
-**Model:** `gemma3:1b` (~815MB)
+## Slide 4: Our AI Model
+**Model:** `gemma3:1b`
+*   **Size:** ~815MB
 *   **Speed:** Optimized for CPU-only inference.
-*   **Stability:** Containers tuned with **6Gi RAM limits** to handle heavy load tests without crashing.
+*   **Stability:** Runs with 6Gi RAM limit to ensure uptime.
 *   **Capability:** General-purpose chat, summarization, and coding assistant.
 
 ---
 
-## Slide 5: Accessing the App (AGB Cloud)
-*   **Public IP:** Provided in your Lab dashboard.
-*   **Forwarding Logic:** We use fixed **NodePorts** for reliability.
-    *   **Chat App:** Public Port 8000 ↔ Private Port **30706**
-    *   **Grafana:** Public Port 3000 ↔ Private Port **31856**
+## Slide 5: Accessing your App
+**Method:** AGB Cloud Public IP + NodePorts
+*   **Chat App:** Port `8000` (Private: `30706`)
+*   **Grafana:** Port `3000` (Private: `31856`)
+*   **Login:** `admin` / `mmnog2026`
+
+> 💡 *Note: These ports are permanent and fixed in our code.*
 
 ---
 
