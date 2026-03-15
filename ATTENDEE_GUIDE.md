@@ -33,7 +33,7 @@ Welcome to the **Deploying Lite AI Applications on AGB Cloud** workshop! This gu
     ```bash
     ./scripts/setup.sh
     ```
-    *Wait for the script to finish. It will deploy all the core application components.*
+    *Wait for the script to finish. It will deploy all application components and the **Prometheus/Grafana** monitoring stack.*
 
 ---
 

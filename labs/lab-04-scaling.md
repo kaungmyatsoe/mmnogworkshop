@@ -42,7 +42,7 @@ kubectl -n ai-workshop autoscale deployment chat-app \
   --max=8
 ```
 
-Or apply the YAML definition:
+Or apply the YAML definition (Requires **Bash**/WSL2/Git Bash):
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -93,9 +93,13 @@ We will use `hey` (a simple HTTP load testing tool) to generate traffic.
 # macOS
 brew install hey
 
-# Linux
+# Linux / WSL2
 wget https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 -O hey
 chmod +x hey && sudo mv hey /usr/local/bin/hey
+
+# Windows (Alternative)
+# If you are not using WSL2, you can run a load test inside your cluster:
+# kubectl run load-test --image=williamyeh/hey -- -n 1000 -c 100 -m POST ...
 ```
 
 **Get your app's external IP:**

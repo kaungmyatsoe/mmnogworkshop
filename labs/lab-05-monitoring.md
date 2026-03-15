@@ -145,7 +145,9 @@ All targets should show `UP` state.
 
 ---
 
-## 8. Set Up a Basic Alert (Bonus)
+### 8. Set Up a Basic Alert (Bonus)
+
+> 💡 **Note:** This command uses a "Heredoc" which requires a **Bash** terminal (Linux, macOS, WSL2, or Git Bash).
 
 ```bash
 cat <<EOF | kubectl apply -f -

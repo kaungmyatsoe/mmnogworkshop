@@ -47,6 +47,8 @@ Before the workshop, please ensure you have:
 - [ ] `helm` v3 installed
 - [ ] `git` installed
 
+> 🪟 **Windows Users:** To run the automation scripts (`.sh` files) and use the Bash commands in this guide, please use **WSL2** or **Git Bash**. Native PowerShell/CMD is not recommended for the script sections.
+
 Full instructions → [Lab 00: Prerequisites](labs/lab-00-prerequisites.md)
 
 ---
