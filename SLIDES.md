@@ -51,6 +51,6 @@ graph LR
 ---
 
 ## Slide 6: Ready? Let's go!
-*   **Repo:** [Insert Link to Git Repo]
+*   **Repo:** https://github.com/kaungmyatsoe/mmnogworkshop.git
 *   **Facilitators:** We are here to help!
 *   **First Step:** Open `labs/lab-00-prerequisites.md`

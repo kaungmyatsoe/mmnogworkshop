@@ -10,7 +10,7 @@ FROM python:3.11-slim
 
 LABEL org.opencontainers.image.title="MMNOG Workshop Chat App"
 LABEL org.opencontainers.image.description="FastAPI AI chat app for MMNOG Kubernetes workshop"
-LABEL org.opencontainers.image.source="https://github.com/mmnog/workshop"
+LABEL org.opencontainers.image.source="https://github.com/kaungmyatsoe/mmnogworkshop"
 
 # Create non-root user
 RUN groupadd -g 1000 appuser && \

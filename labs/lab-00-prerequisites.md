@@ -106,8 +106,8 @@ Keep this file safe — it is your cluster access credential for the workshop.
 ## 3. Clone the Workshop Repository
 
 ```bash
-git clone https://github.com/<your-org>/MMNOG-Workshop.git
-cd MMNOG-Workshop
+git clone https://github.com/kaungmyatsoe/mmnogworkshop.git
+cd mmnogworkshop
 ```
 
 ---
