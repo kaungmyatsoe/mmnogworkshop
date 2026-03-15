@@ -150,8 +150,15 @@ else
 fi
 
 echo ""
-info "Next step: Pull the AI model inside Ollama:"
+echo -e "${YELLOW}══════════════════════════════════════════════════${NC}"
+echo -e "${YELLOW}  ⚠️   ACTION REQUIRED: PULL THE AI MODEL          ${NC}"
+echo -e "${YELLOW}══════════════════════════════════════════════════${NC}"
 echo ""
-OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "<POD_NAME>")
-echo "  kubectl -n $NAMESPACE exec -it $OLLAMA_POD -- ollama pull gemma3:1b"
+echo "Because we are using temporary storage for this lab,"
+echo "you MUST manually download the model into the cluster:"
+echo ""
+OLLAMA_POD=$(kubectl -n "$NAMESPACE" get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "<POD_NAME>")
+echo -e "  ${CYAN}kubectl -n $NAMESPACE exec -it $OLLAMA_POD -- ollama pull gemma3:1b${NC}"
+echo ""
+echo "Wait for the download to finish, then refresh your browser!"
 echo ""
