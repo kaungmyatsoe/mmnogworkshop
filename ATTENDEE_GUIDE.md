@@ -86,6 +86,14 @@ See how your AI app is performing in real-time.
 
 ---
 
+## 🌐 Step 4.1: Grafana Cloud Access (Alternative)
+
+If you have configured CloudStack Port Forwarding for Grafana:
+1.  **Public IP**: `http://<YOUR_PUBLIC_IP>:3000`
+2.  **Private Port**: Ensure your rule points to **NodePort 31856**.
+
+---
+
 ## 📈 Step 5: Scaling (Lab 04)
 
 Observe Kubernetes scaling your application as load increases.
