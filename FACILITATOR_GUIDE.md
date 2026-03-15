@@ -20,6 +20,7 @@ This guide is for the person leading the workshop.
 | **Service IP Pending** | `LoadBalancer` has no IP | AGB Cloud may take 1-2 minutes to map the IP. If it fails, use `kubectl port-forward svc/chat-app 8000:8000`. |
 | **Metrics Not Showing** | `kubectl top` fails | Patch metrics-server with insecure TLS: `kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'` |
 | **Grafana Inaccessible**| Dashboard won't load | Ensure Grafana service is patched to `NodePort`. Point CloudStack Private Port to **`31856`**. |
+| **Why Fixed Ports?** | Why `30706` / `31856`?| I have statically assigned these in the YAMLs so they **never change** upon restart. This keeps instructions consistent for all students. |
 
 ## 💡 Pro-Tips for the Facilitator
 

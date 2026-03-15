@@ -7,7 +7,7 @@ metadata:
     app: chat-app
     component: frontend
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: chat-app
   ports:
@@ -15,4 +15,5 @@ spec:
       protocol: TCP
       port: 8000
       targetPort: 8000
+      nodePort: 30706
   sessionAffinity: None

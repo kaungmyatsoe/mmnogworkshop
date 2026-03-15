@@ -5,7 +5,8 @@ grafana:
   enabled: true
   adminPassword: "mmnog2026"          # Change this in production!
   service:
-    type: ClusterIP
+    type: NodePort
+    nodePort: 31856
   ingress:
     enabled: false                     # Enable if you have an Ingress controller
   persistence:
