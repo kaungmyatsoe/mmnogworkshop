@@ -64,17 +64,27 @@ fi
 for ns in ai-workshop monitoring ingress-nginx; do
   if kubectl get namespace "$ns" &>/dev/null; then
     info "Removing services in $ns..."
-    kubectl delete svc --all -n "$ns" --timeout=30s 2>/dev/null || true
+    kubectl delete svc --all -n "$ns" --timeout=15s 2>/dev/null || true
+    
+    # Force cleanup: Remove finalizers if they are blocking deletion
+    STUCK_SVCS=$(kubectl get svc -n "$ns" -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || true)
+    for svc in $STUCK_SVCS; do
+      info "Unsticking service: $svc in $ns"
+      kubectl patch svc "$svc" -n "$ns" -p '{"metadata":{"finalizers":null}}' --type=merge 2>/dev/null || true
+    done
   fi
 done
 
 # ── Delete namespaces ───────────────────────────────────────────────────────────
 for ns in ai-workshop monitoring ingress-nginx; do
   if kubectl get namespace "$ns" &>/dev/null; then
-    info "Deleting namespace: $ns (this may take 2-3 minutes for LoadBalancers)"
-    kubectl delete namespace "$ns" --timeout=180s || {
-      warn "Namespace deletion timed out, but it's continuing in the background."
+    info "Deleting namespace: $ns"
+    kubectl delete namespace "$ns" --timeout=60s || {
+      warn "Namespace stuck. Removing namespace finalizers..."
+      kubectl patch namespace "$ns" -p '{"spec":{"finalizers":null}}' --type=merge 2>/dev/null || true
+      kubectl delete namespace "$ns" --timeout=30s --force --grace-period=0 2>/dev/null || true
     }
+    ok "Deleted namespace: $ns"
   else
     info "Namespace '$ns' not found, skipping"
   fi
