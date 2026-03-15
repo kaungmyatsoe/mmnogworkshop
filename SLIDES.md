@@ -32,15 +32,23 @@ graph LR
 
 ---
 
-## Slide 4: Our AI Model
-**Model:** `gemma3:1b`
-*   **Size:** ~815MB
+## Slide 4: Our AI Model & Stability
+**Model:** `gemma3:1b` (~815MB)
 *   **Speed:** Optimized for CPU-only inference.
+*   **Stability:** Containers tuned with **6Gi RAM limits** to handle heavy load tests without crashing.
 *   **Capability:** General-purpose chat, summarization, and coding assistant.
 
 ---
 
-## Slide 5: Workshop Roadmap
+## Slide 5: Accessing the App (AGB Cloud)
+*   **Public IP:** Provided in your Lab dashboard.
+*   **Forwarding Logic:** We use fixed **NodePorts** for reliability.
+    *   **Chat App:** Public Port 8000 ↔ Private Port **30706**
+    *   **Grafana:** Public Port 3000 ↔ Private Port **31856**
+
+---
+
+## Slide 6: Workshop Roadmap
 1.  **Lab 00:** Tool Check (`kubectl`, `docker`)
 2.  **Lab 01:** Connect to **AGB Cloud**
 3.  **Lab 02:** Run **Ollama** & Download LLM
@@ -50,7 +58,7 @@ graph LR
 
 ---
 
-## Slide 6: Ready? Let's go!
+## Slide 7: Ready? Let's go!
 *   **Repo:** https://github.com/kaungmyatsoe/mmnogworkshop.git
 *   **Facilitators:** We are here to help!
 *   **First Step:** Open `labs/lab-00-prerequisites.md`
