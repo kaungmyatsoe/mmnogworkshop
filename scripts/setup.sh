@@ -108,6 +108,15 @@ info "Waiting for chat-app pods to be ready..."
 kubectl -n "$NAMESPACE" rollout status deployment/chat-app --timeout=120s
 ok "chat-app is ready"
 
+# ── Optional: Metrics Server Patch ─────────────────────────────────────────────
+info "Checking Metrics Server status..."
+if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+  info "Patching Metrics Server for insecure TLS (required for AGB Cloud)..."
+  kubectl patch deployment metrics-server -n kube-system --type='json' \
+    -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]' &>/dev/null || true
+  ok "Metrics Server patched"
+fi
+
 # ── Summary ─────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
@@ -120,16 +129,20 @@ echo ""
 APP_IP=$(kubectl -n "$NAMESPACE" get svc chat-app \
   -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
 
+NODE_PORT=$(kubectl -n "$NAMESPACE" get svc chat-app \
+  -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || echo "30706")
+
 if [[ -n "$APP_IP" ]]; then
   ok "Chat app is available at: http://$APP_IP:8000"
 else
-  warn "LoadBalancer IP is still provisioning. Check with:"
-  echo "  kubectl -n $NAMESPACE get svc chat-app"
+  warn "LoadBalancer IP pending. Use Public IP with NodePort:"
+  info "  URL: http://<EXTERNAL_IP>:8000"
+  info "  CloudStack Private Port: $NODE_PORT"
 fi
 
 echo ""
 info "Next step: Pull the AI model inside Ollama:"
 echo ""
-echo "  OLLAMA_POD=\$(kubectl -n $NAMESPACE get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}')"
-echo "  kubectl -n $NAMESPACE exec -it \$OLLAMA_POD -- ollama pull gemma3:1b"
+OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "<POD_NAME>")
+echo "  kubectl -n $NAMESPACE exec -it $OLLAMA_POD -- ollama pull gemma3:1b"
 echo ""
