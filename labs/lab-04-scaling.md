@@ -109,6 +109,8 @@ hey -n 5000 -c 100 -m POST \
   -H "Content-Type: application/json" \
   -d '{"prompt":"What is cloud computing?"}' \
   http://$APP_IP:8000/chat
+
+> ⚠️ **Stability Note:** If pods crash during the test, check `kubectl describe pod`. We have increased memory limits to **6Gi** for Ollama to prevent OOM errors during high concurrency.
 ```
 
 ---
@@ -123,7 +125,8 @@ kubectl -n ai-workshop get pods -w
 
 And the HPA status:
 ```bash
-watch -n 5 kubectl -n ai-workshop get hpa
+# If 'watch' is not installed, use:
+kubectl -n ai-workshop get hpa -w
 ```
 
 You should see:

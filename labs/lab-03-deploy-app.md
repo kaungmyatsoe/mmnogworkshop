@@ -50,6 +50,7 @@ Wait for `chat-app-*` pods to show `Running`:
 NAME                        READY   STATUS    RESTARTS   AGE
 chat-app-6f7d4b9c8-abc12   1/1     Running   0          45s
 chat-app-6f7d4b9c8-xyz89   1/1     Running   0          45s
+chat-app-6f7d4b9c8-qwe34   1/1     Running   0          45s
 ollama-7d9f5b4c8-def56     1/1     Running   0          10m
 ```
 
@@ -74,7 +75,9 @@ export APP_IP=$(kubectl -n ai-workshop get svc chat-app -o jsonpath='{.status.lo
 echo "Open: http://$APP_IP:8000"
 ```
 
-> **💡 If using k3s locally:** Use `http://localhost:8000` or the node IP.
+> **💡 AGB Cloud / CloudStack Users:** If `EXTERNAL-IP` stays `<pending>`, use the **Public IP** provided by the facilitator and ensure your CloudStack Port Forwarding rule points to the **NodePort 30706**.
+>
+> **💡 Local Users:** Use `http://localhost:8000` or the node IP.
 
 ---
 

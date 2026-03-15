@@ -33,6 +33,12 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update
 ```
 
+> 💡 **Troubleshooting:** If you see `error: Metrics API not available` when running `kubectl top`, patch the metrics-server to allow insecure TLS (common in self-hosted clusters):
+> 
+> ```bash
+> kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'
+> ```
+
 ---
 
 ## 2. Install kube-prometheus-stack

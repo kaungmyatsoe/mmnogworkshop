@@ -114,7 +114,7 @@ Expected: A one-sentence explanation of Kubernetes from the AI. 🎉
 
 ### Deployment Highlights (`k8s/01-ollama-deployment.yaml`)
 - **Image:** `ollama/ollama:latest` — official Ollama image
-- **Resources:** `requests: cpu=500m, memory=1Gi` / `limits: cpu=2, memory=3Gi`
+- **Resources:** `requests: cpu=500m, memory=1Gi` / `limits: cpu=2, memory=6Gi`
 - **Volume:** `emptyDir` for model storage (use PVC in production)
 - **Probe:** Readiness check on `/api/tags`
 
