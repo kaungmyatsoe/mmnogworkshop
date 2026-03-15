@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama
+  namespace: ai-workshop
+  labels:
+    app: ollama
+    component: llm-runtime
+spec:
+  type: ClusterIP
+  selector:
+    app: ollama
+  ports:
+    - name: http
+      protocol: TCP
+      port: 11434
+      targetPort: 11434

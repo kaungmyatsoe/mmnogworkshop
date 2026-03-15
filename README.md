@@ -108,5 +108,3 @@ kubectl -n ai-workshop get svc chat-app
 ## 📜 License
 
 MIT License — free to use, share, and modify for educational purposes.
-# mmnogworkshop
-# mmnogworkshop

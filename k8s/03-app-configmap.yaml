@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-app-config
+  namespace: ai-workshop
+  labels:
+    app: chat-app
+data:
+  # URL of the Ollama service (internal cluster DNS)
+  OLLAMA_HOST: "http://ollama:11434"
+
+  # Default model to use for chat completions
+  # Options: gemma3:1b | tinyllama | phi3:mini
+  DEFAULT_MODEL: "gemma3:1b"
+
+  # Workshop title displayed in the UI
+  APP_TITLE: "MMNOG AI Chat Workshop"
+
+  # Maximum tokens per response
+  MAX_TOKENS: "512"
+
+  # Log level: debug | info | warning | error
+  LOG_LEVEL: "info"

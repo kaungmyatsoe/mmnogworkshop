@@ -1,0 +1,100 @@
+# 🚀 MMNOG Workshop: AI on Kubernetes - Attendee Guide
+
+Welcome to the **Deploying Lite AI Applications on AGB Cloud** workshop! This guide provides a step-by-step path to successfully completing the labs.
+
+---
+
+## 📅 Workshop Agenda
+
+- **Lab 00:** Tool Verification (15m)
+- **Lab 01:** Connecting to AGB Cloud (20m)
+- **Lab 02:** Deploying the Ollama LLM Engine (20m)
+- **Lab 03:** Deploying the Chat Web Interface (20m)
+- **Lab 04:** Load Testing & Auto-Scaling (15m)
+- **Lab 05:** Monitoring with Grafana (15m)
+
+---
+
+## 🏁 Step 1: Connect to the Cluster
+
+1.  **Download your Kubeconfig**: You should have received a `.yaml` file (e.g., `kubernete-VM0Z.yaml`) from the facilitator.
+2.  **Move it to your Downloads folder** (or keep track of where it is).
+3.  **Open your terminal** and enter the workshop directory:
+    ```bash
+    cd MMNOG-Workshop
+    ```
+4.  **Run the Setup Script**: This script will automatically find your kubeconfig in the Downloads folder and connect to the cluster.
+    ```bash
+    ./scripts/setup.sh
+    ```
+    *Wait for the script to finish. It will deploy all the core application components.*
+
+---
+
+## 🤖 Step 2: Initialize the AI Model
+
+The setup script deploys the application, but we need to "download" the AI model inside the cluster.
+
+1.  **Get the Ollama Pod name**:
+    ```bash
+    # Ensure your KUBECONFIG is set (if setup.sh worked, it might be in your environment)
+    # If not, set it manually: export KUBECONFIG=~/Downloads/kubernete-your-file.yaml
+    OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}')
+    ```
+2.  **Pull the Model**:
+    ```bash
+    kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama pull gemma3:1b
+    ```
+    *This will take 1-2 minutes depending on the network.*
+
+---
+
+## 💬 Step 3: Start Chatting!
+
+Since the Cloud LoadBalancer takes time to provision, we will use a **Port-Forward** to access the app immediately.
+
+1.  **Start the Port-Forward**:
+    ```bash
+    kubectl -n ai-workshop port-forward svc/chat-app 8000:8000
+    ```
+2.  **Open your browser**: Go to **[http://localhost:8000](http://localhost:8000)**.
+3.  **Chat!** Try asking: *"What is Kubernetes?"* or *"Write a poem about networking."*
+
+---
+
+## 📊 Step 4: Monitoring (Lab 05)
+
+See how your AI app is performing in real-time.
+
+1.  **Start Grafana Port-Forward** (in a new terminal tab):
+    ```bash
+    kubectl -n monitoring port-forward svc/kube-prom-stack-grafana 3000:80
+    ```
+2.  **Open Grafana**: Go to **[http://localhost:3000](http://localhost:3000)**.
+3.  **Login**:
+    - **User**: `admin`
+    - **Password**: `mmnog2026`
+4.  **Browse Dashboards**: Go to **Dashboards** -> **Browse** -> **Kubernetes / Compute Resources / Namespace (Pods)** and select the `ai-workshop` namespace.
+
+---
+
+## 📈 Step 5: Scaling (Lab 04)
+
+Observe Kubernetes scaling your application as load increases.
+
+1.  **Check HPA Status**:
+    ```bash
+    kubectl -n ai-workshop get hpa
+    ```
+2.  **Generate Load**: (Instructions will be provided by the facilitator)
+3.  **Watch the pods scale**:
+    ```bash
+    kubectl -n ai-workshop get pods -w
+    ```
+
+---
+
+## 🆘 Need Help?
+- Raise your hand!
+- Post in the MMNOG Telegram channel.
+- Refer to the full lab guides in the `labs/` directory of this repo.

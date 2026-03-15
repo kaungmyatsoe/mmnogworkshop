@@ -1,0 +1,72 @@
+# kube-prometheus-stack Helm values for MMNOG Workshop
+# Docs: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+
+grafana:
+  enabled: true
+  adminPassword: "mmnog2026"          # Change this in production!
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false                     # Enable if you have an Ingress controller
+  persistence:
+    enabled: false                     # Disable for workshop; enable for production
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  grafana.ini:
+    server:
+      root_url: http://localhost:3000
+    auth.anonymous:
+      enabled: false
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: 24h                     # Keep 1 day of data for workshop
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    # Scrape all namespaces (including ai-workshop)
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    # Additional scrape configs for Ollama
+    additionalScrapeConfigs:
+      - job_name: ollama
+        static_configs:
+          - targets:
+              - ollama.ai-workshop.svc.cluster.local:11434
+        metrics_path: /metrics
+        scrape_interval: 30s
+
+alertmanager:
+  enabled: false                       # Disabled for workshop simplicity
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+# Reduce resource usage for workshop clusters
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
