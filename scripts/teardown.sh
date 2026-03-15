@@ -8,21 +8,44 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC
 info()  { echo -e "${CYAN}[INFO]${NC}  $*"; }
 ok()    { echo -e "${GREEN}[OK]${NC}    $*"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC}  $*"; }
+error() { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
+
+# ── Auto-detect Kubeconfig ──────────────────────────────────────────────────────
+info "Searching for a valid Kubernetes connection..."
+
+test_config() {
+  local f="$1"
+  [[ -f "$f" ]] || return 1
+  local abs_f
+  abs_f=$(cd "$(dirname "$f")" && pwd)/$(basename "$f")
+  if KUBECONFIG="$abs_f" kubectl cluster-info &>/dev/null; then
+    export KUBECONFIG="$abs_f"
+    return 0
+  else
+    return 1
+  fi
+}
+
+if [[ -n "${KUBECONFIG:-}" ]] && test_config "$KUBECONFIG"; then
+  ok "Using connection: $KUBECONFIG"
+elif ls "$HOME/Downloads"/kubernete-*.yaml &>/dev/null; then
+  for f in $(ls -t "$HOME/Downloads"/kubernete-*.yaml); do
+    if test_config "$f"; then
+      ok "Connected using latest Download: $(basename "$f")"
+      break
+    fi
+  done
+elif [[ -f "$ROOT_DIR/kmskube.yaml" ]] && test_config "$ROOT_DIR/kmskube.yaml"; then
+  ok "Connected using local kmskube.yaml"
+fi
+
+if [[ -z "${KUBECONFIG:-}" ]]; then
+  error "Could not connect to Kubernetes for teardown."
+fi
 
 warn "This will delete all workshop namespaces and resources."
 read -rp "Are you sure? (yes/no): " CONFIRM
 [[ "$CONFIRM" == "yes" ]] || { info "Teardown cancelled."; exit 0; }
-
-# ── Delete namespaces ───────────────────────────────────────────────────────────
-for ns in ai-workshop monitoring ingress-nginx; do
-  if kubectl get namespace "$ns" &>/dev/null; then
-    info "Deleting namespace: $ns"
-    kubectl delete namespace "$ns" --timeout=120s
-    ok "Deleted namespace: $ns"
-  else
-    info "Namespace '$ns' not found, skipping"
-  fi
-done
 
 # ── Remove Helm releases ────────────────────────────────────────────────────────
 if helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
@@ -36,6 +59,17 @@ if helm list -n ingress-nginx 2>/dev/null | grep -q ingress-nginx; then
   helm uninstall ingress-nginx -n ingress-nginx || true
   ok "Helm release removed"
 fi
+
+# ── Delete namespaces ───────────────────────────────────────────────────────────
+for ns in ai-workshop monitoring ingress-nginx; do
+  if kubectl get namespace "$ns" &>/dev/null; then
+    info "Deleting namespace: $ns"
+    kubectl delete namespace "$ns" --timeout=120s
+    ok "Deleted namespace: $ns"
+  else
+    info "Namespace '$ns' not found, skipping"
+  fi
+done
 
 echo ""
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
