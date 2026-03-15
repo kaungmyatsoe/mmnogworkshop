@@ -55,9 +55,9 @@ Full instructions → [Lab 00: Prerequisites](labs/lab-00-prerequisites.md)
 
 | # | Lab | Duration | Description |
 |---|-----|----------|-------------|
-| 00 | [Prerequisites](labs/lab-00-prerequisites.md) | 15 min | Install tools, verify environment |
-| 01 | [K8s Cluster Setup](labs/lab-01-k8s-setup.md) | 20 min | Create / connect to your cluster |
-| 02 | [Deploy Ollama](labs/lab-02-deploy-ollama.md) | 20 min | Run an LLM inside Kubernetes |
+| 00 | [Prerequisites](labs/lab-00-prerequisites.md) | 10 min | Install tools, verify environment |
+| 01 | [K8s Cluster Setup](labs/lab-01-k8s-setup.md) | 15 min | Create / connect to your cluster |
+| 02 | [Deploy Ollama](labs/lab-02-deploy-ollama.md) | 15 min | Run an LLM inside Kubernetes |
 | 03 | [Deploy Chat App](labs/lab-03-deploy-app.md) | 20 min | Deploy the FastAPI chat UI |
 | 04 | [Scaling](labs/lab-04-scaling.md) | 15 min | Auto-scale with HPA |
 | 05 | [Monitoring](labs/lab-05-monitoring.md) | 15 min | Prometheus + Grafana dashboards |
