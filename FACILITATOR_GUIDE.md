@@ -19,6 +19,7 @@ This guide is for the person leading the workshop.
 | **Model Load Slow** | Chat app says "Thinking..." forever | CPU-only inference is slow. Expect 2-3 tokens/second. Ensure student is using `gemma3:1b`. |
 | **Service IP Pending** | `LoadBalancer` has no IP | AGB Cloud may take 1-2 minutes to map the IP. If it fails, use `kubectl port-forward svc/chat-app 8000:8000`. |
 | **Metrics Not Showing** | `kubectl top` fails | Patch metrics-server with insecure TLS: `kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'` |
+| **Grafana Inaccessible**| Dashboard won't load | Ensure Grafana service is patched to `NodePort`. Point CloudStack Private Port to **`31856`**. |
 
 ## 💡 Pro-Tips for the Facilitator
 

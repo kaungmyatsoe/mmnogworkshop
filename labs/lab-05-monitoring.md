@@ -82,6 +82,8 @@ Open: **http://localhost:3000**
 - Password: `mmnog2026` *(set in `prometheus-values.yaml`)*
 
 > 🔒 Change the password in production!
+>
+> **💡 Cloud Access (Alternative):** If you are using a Public IP and Port Forwarding, your rule should point to **NodePort 31856**. You can then access Grafana at `http://<YOUR_PUBLIC_IP>:3000`.
 
 ---
 
