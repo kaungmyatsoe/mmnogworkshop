@@ -32,6 +32,14 @@ graph LR
 
 ---
 
+## Slide 4: Initializing the Model (CRITICAL)
+*   **Default State:** The Ollama pod starts empty.
+*   **The Command:** `kubectl exec ... -- ollama pull gemma3:1b`
+*   **Common Pitfall:** If you skip this, your chat app will return a **404 Not Found** error.
+*   **Why?** Models are ~1GB; we pull them on-demand to save storage.
+
+---
+
 ## Slide 4: Our AI Model
 **Model:** `gemma3:1b`
 *   **Size:** ~815MB

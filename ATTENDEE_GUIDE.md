@@ -47,6 +47,8 @@ The setup script deploys the application, but we need to "download" the AI model
     ```
     *This will take 1-2 minutes depending on the network.*
 
+> ⚠️ **CRITICAL:** If you skip this step, you will see a **404 Not Found** error in the chat app. This is because the model is not yet loaded into the LLM engine.
+
 ---
 
 ## 💬 Step 3: Start Chatting!

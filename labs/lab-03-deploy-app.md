@@ -144,6 +144,7 @@ INFO: 10.x.x.x - "POST /chat HTTP/1.1" 200 OK — 1.23s
 |---------|----------|
 | `EXTERNAL-IP` stuck as `<pending>` | Wait 2 min; for k3s use NodePort or port-forward |
 | Chat returns `"Ollama unreachable"` | Verify Ollama pod is Running and svc/ollama exists |
+| Chat returns `"404 Not Found"` | Model not found. Go back to Lab 02 and run the `ollama pull` command! |
 | `CrashLoopBackOff` on chat-app | Run `kubectl -n ai-workshop logs -l app=chat-app` |
 | Slow responses | Normal for CPU inference; `gemma3:1b` takes 10–30s on CPU |
 | Port-forward alternative | `kubectl -n ai-workshop port-forward svc/chat-app 8000:8000` |

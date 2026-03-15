@@ -144,4 +144,5 @@ kubectl -n ai-workshop logs -l app=ollama --tail=50
 | Pod in `ImagePullBackOff` | Verify internet access from cluster nodes |
 | `ollama pull` times out | Try `tinyllama` (smaller) or check cluster egress |
 | `curl` returns connection refused | Ensure port-forward is running in a separate terminal |
+| `404 Not Found` in Chat App | You likely forgot to `ollama pull gemma3:1b`. Run Step 2 again! |
 | `jq: command not found` | Install with `brew install jq` or `apt install jq` |

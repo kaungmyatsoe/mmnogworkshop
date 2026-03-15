@@ -14,6 +14,7 @@ This guide is for the person leading the workshop.
 
 | Issue | Symptom | Fix |
 |-------|---------|-----|
+| **Chat 404 Error** | `404 Not Found` in UI | The model wasn't pulled. Run `ollama pull gemma3:1b` inside the Ollama pod. |
 | **Crashed Pods** | `Ollama` pod status `CrashLoopBackOff` | Check logs: `kubectl logs -l app=ollama`. Usually insufficient memory (needs > 1GB). |
 | **Pending Pods** | Pod status `Pending` | Check node resources: `kubectl describe node`. AGB Cloud might need more nodes nodes for all students. |
 | **Model Load Slow** | Chat app says "Thinking..." forever | CPU-only inference is slow. Expect 2-3 tokens/second. Ensure student is using `gemma3:1b`. |
