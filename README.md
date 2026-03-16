@@ -8,9 +8,7 @@
 
 ## 🎯 What You Will Build
 
-A fully containerised **AI Chat Application**
-- AI Model: **tinyllama** (1.1B parameters, extremely fast on CPU)
-running on a cloud Kubernetes cluster:
+A fully containerised **AI Chat Application** running on a cloud Kubernetes cluster:
 
 ```
                        ┌─────────────────────────────────────┐

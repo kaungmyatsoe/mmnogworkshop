@@ -11,7 +11,7 @@ data:
 
   # Default model to use for chat completions
   # Options: gemma3:1b | tinyllama | phi3:mini
-  DEFAULT_MODEL: "tinyllama"
+  DEFAULT_MODEL: "gemma3:1b"
 
   # Workshop title displayed in the UI
   APP_TITLE: "MMNOG AI Chat Workshop"

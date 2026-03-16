@@ -46,7 +46,7 @@ The setup script and the cluster configuration now automatically "download" the 
     # Get the pod name
     OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}')
     
-    # Check if tinyllama is listed
+    # Check if gemma3:1b is listed
     kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama list
     ```
     *If you don't see the model immediately, wait 30-60 seconds and try again.*
