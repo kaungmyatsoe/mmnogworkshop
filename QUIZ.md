@@ -1,86 +1,117 @@
 # 🧠 MMNOG AI Workshop Quiz
 
-Test your knowledge after the workshop! Here are 10 questions split between technical Kubernetes concepts and general workshop knowledge.
+Test your knowledge after the workshop! Here are 10 questions covering Kubernetes, LLMs, and Monitoring.
 
 ---
 
-### Section 1: Deeply Technical Kubernetes
+### Questions
 
-1.  **Which Kubernetes mechanism did we use in the `teardown.sh` script to unstick resources that were stuck in the "Terminating" state?**
-    a) Replicas
-    b) Patched/Removed Finalizers
-    c) Liveness Probes
-    d) ConfigMaps
+1.  **Which Kubernetes resource is used to expose the Chat Application to the public internet in our lab?**
+    a) ConfigMap
+    b) Service (NodePort/LoadBalancer)
+    c) PersistentVolume
+    d) Secret
 
-2.  **In our HPA configuration, what is the role of the `averageUtilization: 60` parameter?**
-    a) It sets the maximum number of pods to 60.
-    b) It tells Kubernetes to start scaling up when average CPU across pods exceeds 60%.
-    c) It limits the memory of a pod to 60MB.
-    d) It restarts the pod every 60 seconds.
+2.  **What is the purpose of the `ollama pull gemma3:1b` command?**
+    a) To start the Ollama server
+    b) To download the AI model weights into the pod
+    c) To build the Docker image
+    d) To update Kubernetes
 
-3.  **Why did the `metrics-server` require a patch with the `--kubelet-insecure-tls` flag?**
-    a) To make the API faster
-    b) To authorize users to read metrics
-    c) To bypass certificate verification between the Metrics Server and Kubelets in the AGB Cloud environment
-    d) To enable HTTP/2 support
+3.  **Why did we increase the memory limits for the Ollama pod in our manifests?**
+    a) To save storage space
+    b) To prevent `OOMKilled` errors during high-load inference
+    c) To make the browser load faster
+    d) Because the model is 10GB
 
-4.  **How is the Chat App configured to find the Ollama service without knowing its IP address?**
-    a) Hardcoded IP address in the code
-    b) Internal Kubernetes DNS using the service name (e.g., `http://ollama:11434`)
-    c) Manual port mapping from the facilitator
-    d) Using a public domain name
+4.  **What does HPA (Horizontal Pod Autoscaler) monitor to decide when to scale?**
+    a) The number of GitHub stars
+    b) Metrics like CPU or Memory utilization from the Metrics Server
+    c) The time of day
+    d) Manual clicks from the user
 
-5.  **Which Kubernetes Deployment `strategy` did we use for Ollama, and why?**
-    a) `RollingUpdate`: to ensure zero downtime
-    b) `Recreate`: to avoid model file lock conflicts and resource spikes on single-replica services
-    c) `BlueGreen`: to test new models
-    d) `Canary`: to roll out to only 10% of users
+5.  **If the Chat App returns a "404 Not Found" error, what is most likely missing?**
+    a) The internet is down
+    b) The AI model has not been "pulled" into Ollama
+    c) The Docker Desktop is off
+    d) The CSS file is broken
 
----
-
-### Section 2: General Workshop & AI Knowledge
-
-6.  **What is the primary role of "Ollama" in our workshop architecture?**
-    a) Serving the HTML/CSS website
-    b) Managing the Kubernetes nodes
-    c) An open-source runtime for running LLMs like Gemma
-    d) A database for storing user chat history
-
-7.  **If you are a Windows user and want to run the provided `.sh` scripts, which environment is recommended?**
-    a) Notepad
-    b) Windows Command Prompt (CMD)
-    c) WSL2 (Ubuntu) or Git Bash
-    d) Internet Explorer
-
-8.  **What happens to the AI model files (`gemma3:1b`) if the Ollama pod is deleted in our current `emptyDir` setup?**
-    a) They are saved to the facilitator's laptop
-    b) They are permanently stored in the cloud
-    c) They are deleted, and must be re-downloaded (pulled) after the pod restarts
-    d) They move to the Chat App pod
-
-9.  **Which tool provides the "Single Source of Truth" for visualizing real-time CPU and Memory spikes?**
+6.  **Which tool did we use to visualize the performance graphs (CPU/Memory usage)?**
     a) Docker Hub
-    b) Grafana Dashboards
-    c) The Linux `top` command
-    d) Telegram
+    b) Prometheus
+    c) Grafana
+    d) kubectl
 
-10. **What is the significance of the fixed NodePorts (`30706` and `31856`) in this workshop?**
-    a) They make the internet faster
-    b) They provide consistent external access points for CloudStack Port Forwarding across all student clusters
-    c) They are randomly assigned by Kubernetes
-    d) They are used for internal database communication
+7.  **In our setup, what is the role of Prometheus?**
+    a) To serve the chat website
+    b) To scrape and store metrics from our pods
+    c) To run the AI model
+    d) To provide the LoadBalancer IP
+
+8.  **What is the default internal port for the Ollama API?**
+    a) 80
+    b) 8000
+    c) 11434
+    d) 3000
+
+9.  **Why do we use `NodePort` instead of just using the Pod IP?**
+    a) Pod IPs are permanent
+    b) Pod IPs are internal to the cluster; NodePort allows external access
+    c) NodePort is faster
+    d) Because the facilitator said so
+
+10. **What does the `--kubelet-insecure-tls` flag fix in the Metrics Server?**
+    a) It makes the AI smarter
+    b) It bypasses TLS verification issues in certain self-hosted clusters
+    c) It encrypts the chat messages
+    d) It speeds up image pulling
+
+11. **In our Deployment, we used the `Recreate` strategy. What does this do during an update?**
+    a) It updates pods one by one
+    b) It shuts down all old pods first before starting new ones
+    c) It creates a new cluster
+    d) It deletes the model files
+
+12. **If you manually delete an AI Chat Pod, why does a new one appear automatically?**
+    a) Magic
+    b) The Deployment controller constantly works to match your "Desired State"
+    c) The user browser refreshes it
+    d) The AGB Cloud portal does it
+
+13. **What is a "Namespace" in Kubernetes primarily used for?**
+    a) To give the cluster a name
+    b) To logically isolate resources (e.g., student A vs student B)
+    c) To speed up the internet
+    d) To store passwords
+
+14. **Which command would you use to see the YAML definition of a running service?**
+    a) `kubectl get svc -o yaml`
+    b) `kubectl show service`
+    c) `cat service.yaml`
+    d) `helm list`
+
+15. **What is the "API Server" in a Kubernetes cluster?**
+    a) The computer where the AI runs
+    b) The central communication hub (the brain) of the cluster
+    c) The website where we chat
+    d) A database for storing images
 
 ---
 
-### Answer Key
+### Answer Key (For Facilitators)
 
-1.  **b** (Patched/Removed Finalizers)
-2.  **b** (CPU average utilization threshold)
-3.  **c** (Bypass certificate verification)
-4.  **b** (Internal Kubernetes DNS)
-5.  **b** (Recreate strategy for Ollama)
-6.  **c** (LLM runtime)
-7.  **c** (WSL2 or Git Bash)
-8.  **c** (Deleted on restart due to emptyDir)
-9.  **b** (Grafana)
-10. **b** (Consistent external mapping)
+1.  **b** (Service)
+2.  **b** (Download model weights)
+3.  **b** (Prevent OOMKilled)
+4.  **b** (CPU/Memory metrics)
+5.  **b** (Model not pulled)
+6.  **c** (Grafana)
+7.  **b** (Scrape & store metrics)
+8.  **c** (11434)
+9.  **b** (External access)
+10. **b** (Bypass TLS issues)
+11. **b** (Shut down old pods first)
+12. **b** (Desired State)
+13. **b** (Resource isolation)
+14. **a** (kubectl get -o yaml)
+15. **b** (Central hub/Brain)
