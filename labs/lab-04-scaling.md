@@ -121,7 +121,7 @@ export APP_IP=$(kubectl -n ai-workshop get svc chat-app -o jsonpath='{.status.lo
 ```bash
 hey -n 5000 -c 150 -m POST \
   -H "Content-Type: application/json" \
-  -d '{"prompt":"What is cloud computing?", "model": "tinyllama"}' \
+  -d '{"prompt":"What is cloud computing?"}' \
   http://$APP_IP:8000/chat
 ```
 
@@ -141,7 +141,7 @@ kubectl -n ai-workshop get pods -w
 And the HPA status:
 ```bash
 # If 'watch' is not installed, use:
-kubectl -n ai-workshop get hpa -w
+kubectl -n ai-workshop exec -it <OLLAMA_POD_NAME> -- ollama pull tinyllama
 ```
 
 You should see:

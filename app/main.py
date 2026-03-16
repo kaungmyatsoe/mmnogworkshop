@@ -14,7 +14,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 OLLAMA_HOST  = os.getenv("OLLAMA_HOST",   "http://localhost:11434")
-DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "gemma3:1b")
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "tinyllama")
 APP_TITLE    = os.getenv("APP_TITLE",     "MMNOG AI Chat Workshop")
 MAX_TOKENS   = int(os.getenv("MAX_TOKENS", "512"))
 LOG_LEVEL    = os.getenv("LOG_LEVEL",     "info").upper()

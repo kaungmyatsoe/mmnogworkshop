@@ -52,7 +52,7 @@ The setup script and the cluster configuration now automatically "download" the 
     *If you don't see the model immediately, wait 30-60 seconds and try again.*
 
 > [!NOTE]
-> We use a **postStart Lifecycle Hook** to automate this. It pulls the **tinyllama** model automatically.
+> We use a **postStart Lifecycle Hook** to automate this. This ensures every pod in the cluster is ready for inference without manual intervention.
 
 ---
 

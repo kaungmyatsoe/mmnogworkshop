@@ -7,7 +7,7 @@
 
 ## What is Ollama?
 
-[Ollama](https://ollama.ai) is an open-source LLM runtime that makes it easy to run large language models locally or in containers. We will run the **`tinyllama`** model — a 1.1-billion parameter model that fits in ~637 MB of RAM and runs extremely fast on CPU.
+[Ollama](https://ollama.ai) is an open-source LLM runtime that makes it easy to run large language models locally or in containers. We will run the **`tinyllama`** model — a 1.1-billion parameter model that fits in ~650 MB of RAM and runs exceptionally well on CPU.
 
 ---
 
@@ -59,7 +59,7 @@ tinyllama       xxx             637 MB  Just now
 ```
 
 > [!NOTE]
-> If you don't see the model yet, wait 30 seconds. The automation script is downloading 637MB in the background!
+> If you don't see the model yet, wait 30 seconds. The automation script is downloading 800MB in the background!
 
 > 💡 **Alternative models (choose one):**
 > - `tinyllama` — ~637 MB, very fast on CPU
