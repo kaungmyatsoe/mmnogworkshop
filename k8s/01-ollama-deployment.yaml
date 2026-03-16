@@ -70,7 +70,7 @@ spec:
                 command:
                   - "/bin/sh"
                   - "-c"
-                  - "until ollama list | grep -q 'NAME'; do sleep 2; done; ollama pull gemma3:1b"
+                  - "until ollama list | grep -q 'NAME'; do sleep 2; done; ollama pull tinyllama"
       volumes:
         - name: ollama-data
           hostPath:

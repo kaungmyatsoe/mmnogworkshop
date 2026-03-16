@@ -46,13 +46,13 @@ The setup script and the cluster configuration now automatically "download" the 
     # Get the pod name
     OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}')
     
-    # Check if gemma3:1b is listed
+    # Check if tinyllama is listed
     kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama list
     ```
     *If you don't see the model immediately, wait 30-60 seconds and try again.*
 
 > [!NOTE]
-> We use a **postStart Lifecycle Hook** to automate this. This ensures every pod in the cluster is ready for inference without manual intervention.
+> We use a **postStart Lifecycle Hook** to automate this. It pulls the **tinyllama** model automatically.
 
 ---
 

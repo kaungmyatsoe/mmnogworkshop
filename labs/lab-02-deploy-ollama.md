@@ -7,7 +7,7 @@
 
 ## What is Ollama?
 
-[Ollama](https://ollama.ai) is an open-source LLM runtime that makes it easy to run large language models locally or in containers. We will run the **`gemma3:1b`** model — a 1-billion parameter model from Google that fits in ~1 GB of RAM and runs well on CPU.
+[Ollama](https://ollama.ai) is an open-source LLM runtime that makes it easy to run large language models locally or in containers. We will run the **`tinyllama`** model — a 1.1-billion parameter model that fits in ~637 MB of RAM and runs extremely fast on CPU.
 
 ---
 
@@ -39,7 +39,7 @@ ollama-7d9f5b4c8-xxxxx   1/1     Running   0          30s
 
 ## 2. Verify Automatic Model Pull
 
-In our configuration (`k8s/01-ollama-deployment.yaml`), we have added a **Lifecycle Hook** that automatically pulls the `gemma3:1b` model whenever a new pod starts.
+In our configuration (`k8s/01-ollama-deployment.yaml`), we have added a **Lifecycle Hook** that automatically pulls the `tinyllama` model whenever a new pod starts.
 
 Wait for the pod to be ready, then verify the model is present:
 
@@ -55,11 +55,11 @@ kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama list
 Expected output:
 ```
 NAME            ID              SIZE    MODIFIED
-gemma3:1b       xxx             815 MB  Just now
+tinyllama       xxx             637 MB  Just now
 ```
 
 > [!NOTE]
-> If you don't see the model yet, wait 30 seconds. The automation script is downloading 800MB in the background!
+> If you don't see the model yet, wait 30 seconds. The automation script is downloading 637MB in the background!
 
 > 💡 **Alternative models (choose one):**
 > - `tinyllama` — ~637 MB, very fast on CPU
@@ -77,7 +77,7 @@ kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama list
 Output:
 ```
 NAME            ID              SIZE    MODIFIED
-gemma3:1b       xxx             815 MB  Just now
+tinyllama       xxx             637 MB  Just now
 ```
 
 ---
@@ -102,7 +102,7 @@ Now test generation:
 curl -s http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gemma3:1b",
+    "model": "tinyllama",
     "prompt": "What is Kubernetes in one sentence?",
     "stream": false
   }' | jq '.response'
@@ -146,5 +146,5 @@ kubectl -n ai-workshop logs -l app=ollama --tail=50
 | Pod in `ImagePullBackOff` | Verify internet access from cluster nodes |
 | `ollama pull` times out | Try `tinyllama` (smaller) or check cluster egress |
 | `curl` returns connection refused | Ensure port-forward is running in a separate terminal |
-| `404 Not Found` in Chat App | The model pull automation may have failed. Run the manual command: `ollama pull gemma3:1b` |
+| `404 Not Found` in Chat App | The model pull automation may have failed. Run the manual command: `ollama pull tinyllama` |
 | `jq: command not found` | Install with `brew install jq` or `apt install jq` |

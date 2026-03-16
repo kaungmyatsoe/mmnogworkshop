@@ -121,7 +121,7 @@ export APP_IP=$(kubectl -n ai-workshop get svc chat-app -o jsonpath='{.status.lo
 ```bash
 hey -n 5000 -c 150 -m POST \
   -H "Content-Type: application/json" \
-  -d '{"prompt":"What is cloud computing?"}' \
+  -d '{"prompt":"What is cloud computing?", "model": "tinyllama"}' \
   http://$APP_IP:8000/chat
 ```
 
