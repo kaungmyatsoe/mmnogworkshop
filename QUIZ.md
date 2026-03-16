@@ -1,117 +1,82 @@
 # 🧠 MMNOG AI Workshop Quiz
 
-Test your knowledge after the workshop! Here are 15 questions covering Kubernetes, AGB Cloud, LLMs, and Monitoring.
+Test your knowledge after the workshop! Here are 10 questions covering Kubernetes, LLMs, and Monitoring.
 
 ---
 
 ### Questions
 
-1.  **Which Kubernetes resource is used to expose the Chat Application to the public internet in our lab?**
-    a) ConfigMap
-    b) Service (NodePort/LoadBalancer)
-    c) PersistentVolume
-    d) Secret
+1.  **What is the primary difference between a `readinessProbe` and a `livenessProbe` in our Ollama deployment?**
+    a) Readiness pulls the model; Liveness starts the pod.
+    b) Readiness determines if the pod is ready to serve traffic; Liveness determines if the container needs to be restarted.
+    c) Readiness is for CPU; Liveness is for Memory.
+    d) There is no difference; they are interchangeable.
 
-2.  **What is the purpose of the `ollama pull gemma3:1b` command?**
-    a) To start the Ollama server
-    b) To download the AI model weights into the pod
-    c) To build the Docker image
-    d) To update Kubernetes
+2.  **In Kubernetes, which resource metric does the HPA typically use to trigger a scale-up event?**
+    a) Resource Limit
+    b) Resource Request
+    c) Storage capacity
+    d) Number of open ports
 
-3.  **Why did we increase the memory limits for the Ollama pod in our manifests?**
-    a) To save storage space
-    b) To prevent `OOMKilled` errors during high-load inference
-    c) To make the browser load faster
-    d) Because the model is 10GB
+3.  **Why did the `ai-workshop` namespace get stuck in a "Terminating" state during our teardown, and how did we resolve it?**
+    a) High CPU usage; we restarted the node.
+    b) A "Finalizer" on the LoadBalancer service was waiting for cloud cleanup; we patched the service to remove it.
+    c) The model was too large; we deleted the pod first.
+    d) Kubernetes was out of memory; we added a new node.
 
-4.  **What does HPA (Horizontal Pod Autoscaler) monitor to decide when to scale?**
-    a) The number of GitHub stars
-    b) Metrics like CPU or Memory utilization from the Metrics Server
-    c) The time of day
-    d) Manual clicks from the user
+4.  **When the Chat App communicates with Ollama using `http://ollama:11434`, what Kubernetes feature resolves the name "ollama" to an IP?**
+    a) ExternalDNS
+    b) CoreDNS (kube-dns)
+    c) Docker Bridge
+    d) CloudStack IP Manager
 
-5.  **If the Chat App returns a "404 Not Found" error, what is most likely missing?**
-    a) The internet is down
-    b) The AI model has not been "pulled" into Ollama
-    c) The Docker Desktop is off
-    d) The CSS file is broken
+5.  **Which Deployment strategy did we use for Ollama to ensure only one pod accesses the model storage at a time?**
+    a) `RollingUpdate`
+    b) `Recreate`
+    c) `BlueGreen`
+    d) `Canary`
 
-6.  **Which tool did we use to visualize the performance graphs (CPU/Memory usage)?**
-    a) Docker Hub
-    b) Prometheus
-    c) Grafana
-    d) kubectl
+6.  **What happens if a pod exceeds its memory `limit` (e.g., 6Gi) in our Ollama manifest?**
+    a) It gets throttled (slowed down).
+    b) It is killed by the kernel OOM-killer (`OOMKilled`).
+    c) It automatically scales to a larger node.
+    d) It shares memory with the `chat-app` pod.
 
-7.  **In our setup, what is the role of Prometheus?**
-    a) To serve the chat website
-    b) To scrape and store metrics from our pods
-    c) To run the AI model
-    d) To provide the LoadBalancer IP
+7.  **What is the purpose of the `metrics-server` in our workshop?**
+    a) To serve the Grafana UI.
+    b) To provide the `kubectl top` data and allow the HPA to function.
+    c) To store long-term logs.
+    d) To pull images from Docker Hub.
 
-8.  **What is the default internal port for the Ollama API?**
-    a) 80
-    b) 8000
-    c) 11434
-    d) 3000
+8.  **If the `chat-app` needs to be reachable on port 8000 via a NodePort of 30706, which field in the Service manifest must be set to 30706?**
+    a) `port`
+    b) `targetPort`
+    c) `nodePort`
+    d) `hostPort`
 
-9.  **Why do we use `NodePort` instead of just using the Pod IP?**
-    a) Pod IPs are permanent
-    b) Pod IPs are internal to the cluster; NodePort allows external access
-    c) NodePort is faster
-    d) Because the facilitator said so
+9.  **Why do we use a `ConfigMap` for the `OLLAMA_HOST` instead of hardcoding it in the Docker image?**
+    a) To make the image smaller.
+    b) To decouple application configuration from the code, allowing changes without rebuilding images.
+    c) Because Kubernetes requires it for every variable.
+    d) To encrypt the connection.
 
-10. **What does the `--kubelet-insecure-tls` flag fix in the Metrics Server?**
-    a) It makes the AI smarter
-    b) It bypasses TLS verification issues in certain self-hosted clusters
-    c) It encrypts the chat messages
-    d) It speeds up image pulling
-
-11. **What is a "Namespace" in Kubernetes primarily used for?**
-    a) To speed up the internet
-    b) To logically isolate resources within the same cluster
-    c) To name the physical hardware
-    d) To store user passwords
-
-12. **Which of the following describes "AGB Cloud"?**
-    a) A local file storage app
-    b) A regional high-performance cloud platform for Kubernetes and VM hosting
-    c) A new type of web browser
-    d) A video editing software
-
-13. **In the Kubernetes architecture, what is a "Pod"?**
-    a) A physical server in the data center
-    b) The smallest deployable unit that can contain one or more containers
-    c) A high-level database
-    d) A network cable
-
-14. **What is the benefit of using "Replicas" in a Deployment?**
-    a) It makes the code twice as long
-    b) It provides high availability and load balancing for your application
-    c) It deletes old data automatically
-    d) It changes the background color of the app
-
-15. **Which file format is used to define Kubernetes manifests?**
-    a) .mp3
-    b) .exe
-    c) .yaml
-    d) .png
+10. **What does the `spec.selector` in a Service manifest do?**
+    a) It selects which cloud provider to use.
+    b) It determines which pods the service sends traffic to based on their labels.
+    c) It selects the version of Kubernetes.
+    d) It defines the CPU limits for the pods.
 
 ---
 
 ### Answer Key (For Facilitators)
 
-1.  **b** (Service)
-2.  **b** (Download model weights)
-3.  **b** (Prevent OOMKilled)
-4.  **b** (CPU/Memory metrics)
-5.  **b** (Model not pulled)
-6.  **c** (Grafana)
-7.  **b** (Scrape & store metrics)
-8.  **c** (11434)
-9.  **b** (External access)
-10. **b** (Bypass TLS issues)
-11. **b** (Logical isolation)
-12. **b** (Regional cloud platform)
-13. **b** (Smallest deployable unit)
-14. **b** (High availability)
-15. **c** (.yaml)
+1.  **b** (Readiness = traffic; Liveness = restart)
+2.  **b** (Request - HPA calculations are based on the target percentage of the requested resource)
+3.  **b** (Finalizers / LoadBalancer cleanup)
+4.  **b** (CoreDNS)
+5.  **b** (Recreate)
+6.  **b** (OOMKilled)
+7.  **b** (Metrics data for HPA/top)
+8.  **c** (nodePort)
+9.  **b** (Decouple config from code)
+10. **b** (Matches pod labels)
