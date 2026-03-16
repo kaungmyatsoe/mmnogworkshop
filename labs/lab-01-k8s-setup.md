@@ -137,7 +137,39 @@ kubectl config set-context --current --namespace=ai-workshop
 
 ---
 
-## 7. Cluster Summary
+## 7. Accessing the Kubernetes Dashboard (Headlamp)
+
+The AGB Cloud v1.35.2 template includes **Headlamp** as the cluster dashboard. To access it via your Public IP:
+
+1.  **Expose the Dashboard**:
+    ```bash
+    kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "NodePort"}}'
+    ```
+
+2.  **Create the Administrative Account**:
+    *(This account is required for full access)*
+    ```bash
+    kubectl create sa kubernetes-dashboard -n kubernetes-dashboard
+    ```
+
+3.  **Generate a Login Token**:
+    ```bash
+    kubectl -n kubernetes-dashboard create token kubernetes-dashboard
+    ```
+
+4.  **Find the Dashboard URL**:
+    ```bash
+    # Look for the internal port value (e.g., 30564)
+    NODE_PORT=$(kubectl get svc kubernetes-dashboard -n kubernetes-dashboard -o jsonpath='{.spec.ports[0].nodePort}')
+    echo "Dashboard URL: https://<YOUR_PUBLIC_IP>:$NODE_PORT"
+    ```
+
+> [!NOTE]
+> Headlamp uses HTTPS. You may see a security warning in your browser; click **Advanced** -> **Proceed**.
+
+---
+
+## 8. Cluster Summary
 
 ```bash
 echo "=== Cluster Info ==="
