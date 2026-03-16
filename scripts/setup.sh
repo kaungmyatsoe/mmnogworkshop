@@ -181,7 +181,7 @@ if [[ -n "$HEADLAMP_PORT" ]]; then
   echo ""
   ok "Kubernetes Dashboard (Headlamp) is ready:"
   info "  URL: https://<EXTERNAL_IP>:$HEADLAMP_PORT"
-  info "  Get Login Token: kubectl -n kubernetes-dashboard create token default"
+  info "  Get Login Token: kubectl -n kubernetes-dashboard create token kubernetes-dashboard"
 fi
 
 echo ""
