@@ -3,10 +3,10 @@
 ---
 
 ## Slide 1: Welcome!
-**Title:** Deploying Lite AI Apps on AGB Cloud
+**Title:** Modern Kubernetes: Deploying Cloud-Native AI App 
 **Subtitle:** MMNOG Workshop 2026
 
-*   **Presenter:** [Your Name / Kaung Myat Soe]
+*   **Presenter:** Kaung Myat Soe
 *   **Goal:** From zero to a running AI chat app in 2 hours.
 *   **Platform:** AGB Cloud (agbc.cloud)
 
