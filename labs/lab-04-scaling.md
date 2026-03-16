@@ -56,16 +56,14 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: chat-app
-  minReplicas: 2
-  maxReplicas: 8
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 60
-EOF
+  --min=3 \
+  --max=10
+```
+
+### Ollama Backend HPA (Using YAML)
+Apply the pre-configured HPA for the AI backend:
+```bash
+kubectl apply -f k8s/07-ollama-hpa.yaml
 ```
 
 ---
@@ -107,14 +105,15 @@ chmod +x hey && sudo mv hey /usr/local/bin/hey
 export APP_IP=$(kubectl -n ai-workshop get svc chat-app -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-**Run the load test** (100 concurrent workers for 60 seconds):
+**Run the load test** (150 concurrent workers for 60 seconds):
 ```bash
-hey -n 5000 -c 100 -m POST \
+hey -n 5000 -c 150 -m POST \
   -H "Content-Type: application/json" \
   -d '{"prompt":"What is cloud computing?"}' \
   http://$APP_IP:8000/chat
+```
 
-> ⚠️ **Stability Note:** If pods crash during the test, check `kubectl describe pod`. We have increased memory limits to **6Gi** for Ollama to prevent OOM errors during high concurrency.
+> ⚠️ **Scaling Optimization:** We have enabled `OLLAMA_NUM_PARALLEL=4` and switched to `hostPath` storage in `01-ollama-deployment.yaml`. This allows new AI pods to start **instantly** without re-downloading the 800MB model, and each pod can handle multiple requests concurrently!
 ```
 
 ---
@@ -173,10 +172,11 @@ kubectl -n ai-workshop scale deployment chat-app --replicas=1
 
 | Concept | Value in our setup |
 |---------|--------------------|
-| Min replicas | 2 (always available) |
-| Max replicas | 8 (cost ceiling) |
-| Scale-up trigger | CPU > 60% for 3 min |
-| Scale-down | CPU < 60% for 5 min (cooldown) |
+| App Min/Max | 3 / 10 replicas |
+| Ollama Min/Max | 1 / 3 replicas |
+| Storage Strategy | `hostPath` (Node Cache) |
+| Parallel Inference | `NUM_PARALLEL=4` |
+| Scale-up trigger | CPU > 60-70% |
 | Check interval | Every 15 seconds |
 
 ---
