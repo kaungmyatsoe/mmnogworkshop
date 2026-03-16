@@ -150,6 +150,12 @@ info "Checking Headlamp Dashboard status..."
 if kubectl get svc kubernetes-dashboard -n kubernetes-dashboard &>/dev/null; then
   info "Exposing Headlamp via NodePort..."
   kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "NodePort"}}' &>/dev/null || true
+  
+  # Create the missing ServiceAccount that the template expects
+  if ! kubectl get sa kubernetes-dashboard -n kubernetes-dashboard &>/dev/null; then
+    info "Creating administrative service account for Headlamp..."
+    kubectl create sa kubernetes-dashboard -n kubernetes-dashboard &>/dev/null || true
+  fi
   ok "Headlamp exposed"
 fi
 
