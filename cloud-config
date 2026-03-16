@@ -1,0 +1,5 @@
+[Global]
+api-url = http://10.1.10.5/client/api
+api-key = REPLACE_WITH_YOUR_API_KEY
+secret-key = REPLACE_WITH_YOUR_SECRET_KEY
+project-id = c348a4e3-bcbf-4a12-976d-eae471974544
