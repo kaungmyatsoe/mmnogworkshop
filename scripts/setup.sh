@@ -111,7 +111,8 @@ ok "Ollama manifests applied"
 kubectl apply -f "$K8S_DIR/03-app-configmap.yaml"
 kubectl apply -f "$K8S_DIR/04-app-deployment.yaml"
 kubectl apply -f "$K8S_DIR/05-app-service.yaml"
-ok "Chat app manifests applied"
+kubectl apply -f "$K8S_DIR/07-ollama-hpa.yaml"
+ok "Chat app and HPA manifests applied"
 
 # ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
 if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then

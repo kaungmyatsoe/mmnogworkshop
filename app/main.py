@@ -264,17 +264,17 @@ async def chat(request: Request):
         logger.info("Chat response | elapsed=%.2fs | tokens=%s", elapsed, data.get("eval_count"))
         return {"response": response, "model": model, "elapsed_s": elapsed}
 
+    except httpx.TimeoutException:
+        logger.error("Ollama request timed out after 180s")
+        return JSONResponse(
+            {"error": "AI Backend (Ollama) timed out. The system is likely under heavy load."},
+            status_code=504,
+        )
     except httpx.ConnectError:
         logger.error("Cannot connect to Ollama at %s", OLLAMA_HOST)
         return JSONResponse(
             {"error": f"Ollama unreachable at {OLLAMA_HOST}"},
             status_code=503,
-        )
-    except httpx.TimeoutException:
-        logger.error("Ollama request timed out (model: %s)", model)
-        return JSONResponse(
-            {"error": "AI backend is busy/timed out. Please try again in a moment."},
-            status_code=504,
         )
     except httpx.HTTPStatusError as exc:
         logger.error("Ollama error: %s", exc)
