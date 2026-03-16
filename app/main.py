@@ -270,6 +270,12 @@ async def chat(request: Request):
             {"error": f"Ollama unreachable at {OLLAMA_HOST}"},
             status_code=503,
         )
+    except httpx.TimeoutException:
+        logger.error("Ollama request timed out (model: %s)", model)
+        return JSONResponse(
+            {"error": "AI backend is busy/timed out. Please try again in a moment."},
+            status_code=504,
+        )
     except httpx.HTTPStatusError as exc:
         logger.error("Ollama error: %s", exc)
         return JSONResponse({"error": str(exc)}, status_code=502)
