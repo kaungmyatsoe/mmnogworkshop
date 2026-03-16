@@ -64,6 +64,13 @@ spec:
             periodSeconds: 15
             timeoutSeconds: 10
             failureThreshold: 8
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "until ollama list | grep -q 'NAME'; do sleep 2; done; ollama pull gemma3:1b"
       volumes:
         - name: ollama-data
           hostPath:

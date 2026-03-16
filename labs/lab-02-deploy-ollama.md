@@ -37,27 +37,29 @@ ollama-7d9f5b4c8-xxxxx   1/1     Running   0          30s
 
 ---
 
-## 2. Pull the AI Model
+## 2. Verify Automatic Model Pull
 
-Once the pod is running, exec into it and pull the model:
+In our configuration (`k8s/01-ollama-deployment.yaml`), we have added a **Lifecycle Hook** that automatically pulls the `gemma3:1b` model whenever a new pod starts.
+
+Wait for the pod to be ready, then verify the model is present:
 
 ```bash
 # Get the pod name
 OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}')
 echo "Ollama pod: $OLLAMA_POD"
 
-# Pull gemma3:1b (lightweight ~815MB model)
-kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama pull gemma3:1b
+# Check if model is already pulled (automation check)
+kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama list
 ```
 
 Expected output:
 ```
-pulling manifest
-pulling 8eeb52dfbb24... 100% ▕████████████████▏ 815 MB
-verifying sha256 digest
-writing manifest
-success
+NAME            ID              SIZE    MODIFIED
+gemma3:1b       xxx             815 MB  Just now
 ```
+
+> [!NOTE]
+> If you don't see the model yet, wait 30 seconds. The automation script is downloading 800MB in the background!
 
 > 💡 **Alternative models (choose one):**
 > - `tinyllama` — ~637 MB, very fast on CPU
@@ -144,5 +146,5 @@ kubectl -n ai-workshop logs -l app=ollama --tail=50
 | Pod in `ImagePullBackOff` | Verify internet access from cluster nodes |
 | `ollama pull` times out | Try `tinyllama` (smaller) or check cluster egress |
 | `curl` returns connection refused | Ensure port-forward is running in a separate terminal |
-| `404 Not Found` in Chat App | You likely forgot to `ollama pull gemma3:1b`. Run Step 2 again! |
+| `404 Not Found` in Chat App | The model pull automation may have failed. Run the manual command: `ollama pull gemma3:1b` |
 | `jq: command not found` | Install with `brew install jq` or `apt install jq` |

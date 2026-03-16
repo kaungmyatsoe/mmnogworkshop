@@ -37,23 +37,22 @@ Welcome to the **Deploying Lite AI Applications on AGB Cloud** workshop! This gu
 
 ---
 
-## 🤖 Step 2: Initialize the AI Model
+## 🤖 Step 2: Verify AI Model Initialization
 
-The setup script deploys the application, but we need to "download" the AI model inside the cluster.
+The setup script and the cluster configuration now automatically "download" the AI model inside the cluster whenever a new pod starts.
 
-1.  **Get the Ollama Pod name**:
+1.  **Verify the Model is Ready**:
     ```bash
-    # Ensure your KUBECONFIG is set (if setup.sh worked, it might be in your environment)
-    # If not, set it manually: export KUBECONFIG=~/Downloads/kubernete-your-file.yaml
+    # Get the pod name
     OLLAMA_POD=$(kubectl -n ai-workshop get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}')
+    
+    # Check if gemma3:1b is listed
+    kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama list
     ```
-2.  **Pull the Model**:
-    ```bash
-    kubectl -n ai-workshop exec -it $OLLAMA_POD -- ollama pull gemma3:1b
-    ```
-    *This will take 1-2 minutes depending on the network.*
+    *If you don't see the model immediately, wait 30-60 seconds and try again.*
 
-> ⚠️ **CRITICAL:** If you skip this step, you will see a **404 Not Found** error in the chat app. This is because the model is not yet loaded into the LLM engine.
+> [!NOTE]
+> We use a **postStart Lifecycle Hook** to automate this. This ensures every pod in the cluster is ready for inference without manual intervention.
 
 ---
 
