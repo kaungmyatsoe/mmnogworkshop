@@ -32,6 +32,10 @@ spec:
               value: "0.0.0.0"
             - name: OLLAMA_KEEP_ALIVE
               value: "24h"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "4"
+            - name: OLLAMA_MAX_LOADED_MODELS
+              value: "1"
           resources:
             requests:
               cpu: "500m"

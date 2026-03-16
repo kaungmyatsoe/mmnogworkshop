@@ -25,8 +25,15 @@ logger = logging.getLogger(__name__)
 # ── App lifecycle ───────────────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Create a persistent client with a connection pool
+    app.state.client = httpx.AsyncClient(
+        base_url=OLLAMA_HOST,
+        timeout=180.0,
+        limits=httpx.Limits(max_keepalive_connections=100, max_connections=500)
+    )
     logger.info("Starting MMNOG Chat App | Ollama: %s | Model: %s", OLLAMA_HOST, DEFAULT_MODEL)
     yield
+    await app.state.client.aclose()
     logger.info("Shutting down MMNOG Chat App")
 
 app = FastAPI(title=APP_TITLE, lifespan=lifespan)
@@ -239,16 +246,17 @@ async def chat(request: Request):
     start = time.monotonic()
 
     try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            resp = await client.post(
-                f"{OLLAMA_HOST}/api/generate",
-                json={
-                    "model":  model,
-                    "prompt": prompt,
-                    "stream": False,
-                    "options": {"num_predict": MAX_TOKENS},
-                },
-            )
+        # Use the shared client from app state
+        client = request.app.state.client
+        resp = await client.post(
+            "/api/generate",
+            json={
+                "model":  model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"num_predict": MAX_TOKENS},
+            },
+        )
         resp.raise_for_status()
         data     = resp.json()
         response = data.get("response", "").strip()
@@ -268,11 +276,11 @@ async def chat(request: Request):
 
 
 @app.get("/health")
-async def health():
+async def health(request: Request):
     """Liveness / readiness probe endpoint."""
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            r = await client.get(f"{OLLAMA_HOST}/api/tags")
+        client = request.app.state.client
+        r = await client.get("/api/tags")
         ollama_status = "reachable" if r.status_code == 200 else f"http_{r.status_code}"
     except Exception:
         ollama_status = "unreachable"
@@ -281,11 +289,11 @@ async def health():
 
 
 @app.get("/api/models")
-async def list_models():
+async def list_models(request: Request):
     """Return available models from Ollama."""
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            r = await client.get(f"{OLLAMA_HOST}/api/tags")
+        client = request.app.state.client
+        r = await client.get("/api/tags")
         return r.json()
     except Exception as exc:
         return JSONResponse({"error": str(exc)}, status_code=503)
