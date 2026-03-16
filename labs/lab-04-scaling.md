@@ -36,28 +36,40 @@ kubectl top nodes
 Now create the HPA:
 
 ```bash
+# If you created it with the old command, delete it first:
+kubectl -n ai-workshop delete hpa chat-app 2>/dev/null || true
+
+# Use the modern syntax
 kubectl -n ai-workshop autoscale deployment chat-app \
-  --cpu-percent=60 \
+  --cpu=60% \
   --min=2 \
   --max=8
 ```
 
-Or apply the YAML definition (Requires **Bash**/WSL2/Git Bash):
+Or apply the YAML definition (Recommended):
 
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: chat-app-hpa
+  name: chat-app
   namespace: ai-workshop
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: chat-app
-  --min=3 \
-  --max=10
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60
+EOF
 ```
 
 ### Ollama Backend HPA (Using YAML)
