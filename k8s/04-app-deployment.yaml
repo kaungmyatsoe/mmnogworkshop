@@ -43,7 +43,7 @@ spec:
                 name: chat-app-config
           resources:
             requests:
-              cpu: "300m"  # Increased to ensure node saturation triggers scaling
+              cpu: "100m"
               memory: "128Mi"
           livenessProbe:
             httpGet:
