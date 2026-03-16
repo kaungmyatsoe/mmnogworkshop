@@ -35,3 +35,4 @@ A student is done when:
 1.  They can chat with the AI at `http://<IP>:8000`.
 2.  They can show 3+ replicas of `chat-app` running during a load test.
 3.  They can see a "CPU spike" graph in Grafana.
+4.  **Bonus:** They can correctly answer 7/10 questions in the [Workshop Quiz](./QUIZ.md).

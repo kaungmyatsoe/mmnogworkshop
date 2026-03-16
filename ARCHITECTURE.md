@@ -7,10 +7,11 @@ This document provides a high-level overview of the workshop's technical archite
 The application follows a modern cloud-native architecture, leveraging Kubernetes for orchestration, FastAPI for the application layer, and Ollama for local LLM inference.
 
 ### Architecture Diagrams
-- **[Color Version](./architecture_diagram.png)** (Best for screens)
+- **[Vibrant 2D Color](./architecture_diagram_2d_color.png)** (Recommended for Slides)
+- **[Modern Glassmorphic](./architecture_diagram.png)** (Premium Look)
 - **[Black & White Version](./architecture_diagram_bw.png)** (Best for printing)
 
-![Architecture B&W](./architecture_diagram_bw.png)
+![Architecture 2D Color](./architecture_diagram_2d_color.png)
 
 ```mermaid
 graph TD
