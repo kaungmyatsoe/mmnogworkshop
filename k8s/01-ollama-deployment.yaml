@@ -43,6 +43,8 @@ spec:
             requests:
               cpu: "500m"
               memory: "1Gi"
+            limits:
+              memory: "6Gi"  # Safety rail to prevent node crash
           volumeMounts:
             - name: ollama-data
               mountPath: /root/.ollama

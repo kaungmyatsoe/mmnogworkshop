@@ -185,6 +185,19 @@ kubectl -n ai-workshop scale deployment chat-app --replicas=1
 
 ---
 
+---
+
+## 8. Capacity Planning & Physical Limits
+
+> 🚨 **Critical Warning:** In our 300-user load test, we observed nodes going "Unknown". This happens when the AI Backend (Ollama) consumes all available physical CPU/RAM, making the node's Operating System unresponsive.
+>
+> **Best Practices for AI Scaling:**
+> 1. **Resource Limits:** Always set a `limits.memory` (e.g., 6Gi) to ensure the pod is killed *before* it takes down the node.
+> 2. **Node Sizing:** AI models are resource-heavy. For high-concurrency (300+ users), you typically need **larger nodes** (e.g., 8-16 vCPUs) or **more nodes** (4-6 workers instead of 2).
+> 3. **Queue Management:** Real-world AI apps often use a task queue (like Celery or Redis) to handle spikes rather than trying to process everyone in real-time.
+
+---
+
 ## 💡 Troubleshooting
 
 | Problem | Solution |
