@@ -74,13 +74,18 @@ workshop-node-3   Ready    <none>          9m     v1.28.x
 ## 3. Switch to Your Cluster Context
 
 List all available contexts:
-
 ```bash
 kubectl config get-contexts
 ```
 
-Switch to the AGB Cloud workshop context:
+If your context name is not `agbc-workshop`, rename it for consistency:
+```bash
+# Get the context name with * next to it
+CURRENT_CTX=$(kubectl config current-context)
+kubectl config rename-context "$CURRENT_CTX" agbc-workshop
+```
 
+Switch to the AGB Cloud workshop context:
 ```bash
 kubectl config use-context agbc-workshop
 ```

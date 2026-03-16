@@ -82,7 +82,12 @@ for cmd in kubectl helm; do
 done
 
 kubectl cluster-info &>/dev/null || error "Cannot connect to Kubernetes cluster. Run: kubectl cluster-info"
-ok "Connected to cluster: $(kubectl config current-context)"
+CURRENT_CTX=$(kubectl config current-context)
+if [[ "$CURRENT_CTX" != "agbc-workshop" ]]; then
+  info "Normalizing context name to 'agbc-workshop'..."
+  kubectl config rename-context "$CURRENT_CTX" agbc-workshop &>/dev/null || true
+fi
+ok "Connected to cluster: agbc-workshop"
 
 # ── Apply manifests ─────────────────────────────────────────────────────────────
 info "Applying Kubernetes manifests..."
