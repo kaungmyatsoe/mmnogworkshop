@@ -3,7 +3,8 @@
 ---
 
 ## Slide 1: Welcome!
-**Title:** Modern Kubernetes: Deploying Cloud-Native AI App 
+**Title:** Modern Kubernetes: Deploying Cloud-Native AI App
+
 **Subtitle:** MMNOG Workshop 2026
 
 *   **Presenter:** Kaung Myat Soe
