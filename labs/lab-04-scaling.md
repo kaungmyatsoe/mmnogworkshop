@@ -141,7 +141,7 @@ kubectl -n ai-workshop get pods -w
 And the HPA status:
 ```bash
 # If 'watch' is not installed, use:
-kubectl -n ai-workshop exec -it <OLLAMA_POD_NAME> -- ollama pull tinyllama
+kubectl -n ai-workshop get hpa -w
 ```
 
 You should see:
