@@ -104,7 +104,7 @@ We will use `hey` (a simple HTTP load testing tool) to generate traffic.
 brew install hey
 
 # Linux / WSL2
-wget https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 -O hey
+wget https://storage.googleapis.com/hey-releases/hey_linux_amd64 -O hey
 chmod +x hey && sudo mv hey /usr/local/bin/hey
 
 # Windows (Alternative)
