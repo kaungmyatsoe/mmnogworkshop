@@ -145,6 +145,14 @@ if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
   ok "Metrics Server patched"
 fi
 
+# ── Optional: Headlamp Dashboard Patch ───────────────────────────────────────
+info "Checking Headlamp Dashboard status..."
+if kubectl get svc kubernetes-dashboard -n kubernetes-dashboard &>/dev/null; then
+  info "Exposing Headlamp via NodePort..."
+  kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p '{"spec": {"type": "NodePort"}}' &>/dev/null || true
+  ok "Headlamp exposed"
+fi
+
 # ── Summary ─────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
@@ -166,6 +174,14 @@ else
   warn "LoadBalancer IP pending. Use Public IP with NodePort:"
   info "  URL: http://<EXTERNAL_IP>:8000"
   info "  CloudStack Private Port: $NODE_PORT"
+fi
+
+HEADLAMP_PORT=$(kubectl get svc kubernetes-dashboard -n kubernetes-dashboard -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || true)
+if [[ -n "$HEADLAMP_PORT" ]]; then
+  echo ""
+  ok "Kubernetes Dashboard (Headlamp) is ready:"
+  info "  URL: https://<EXTERNAL_IP>:$HEADLAMP_PORT"
+  info "  Get Login Token: kubectl -n kubernetes-dashboard create token default"
 fi
 
 echo ""
