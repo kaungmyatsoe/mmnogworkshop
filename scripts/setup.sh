@@ -131,21 +131,28 @@ if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
 fi
 
 # ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
-if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
+if ! helm list -n monitoring 2>/dev/null | grep -q "kube-prom-stack" || helm status kube-prom-stack -n monitoring 2>/dev/null | grep -iq "STATUS: failed"; then
   info "Installing Monitoring Stack (Prometheus & Grafana)..."
   kubectl create namespace monitoring 2>/dev/null || true
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
   helm repo update 2>/dev/null || true
-  
+
+  # Cleanup failed release if exists
+  if helm status kube-prom-stack -n monitoring 2>/dev/null | grep -iq "STATUS: failed"; then
+    warn "Previous monitoring installation failed. Cleaning up for retry..."
+    helm uninstall kube-prom-stack -n monitoring &>/dev/null || true
+    sleep 5
+  fi
+
   if helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
     -n monitoring \
     -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 15m --wait; then
     ok "Monitoring stack installed"
   else
-    warn "Monitoring stack installation failed. You may need to run it manually with: helm install..."
+    warn "Monitoring stack installation failed. You may need to run it manually."
   fi
 else
-  info "Monitoring stack already present, skipping installation"
+  info "Monitoring stack already present and healthy, skipping installation"
 fi
 
 # ── Wait for pods ───────────────────────────────────────────────────────────────
