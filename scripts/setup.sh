@@ -115,15 +115,23 @@ kubectl apply -f "$K8S_DIR/05-app-service.yaml"
 kubectl apply -f "$K8S_DIR/07-ollama-hpa.yaml"
 ok "Chat app and HPA manifests applied"
 
-# ── Resource Checks ──────────────────────────────────────────────────────────
-if kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="DiskPressure")].status}' | grep -q "True"; then
-  warn "Nodes are reporting DiskPressure! This cluster has very small disks."
-  warn "Cleaning up failed pods and switching to Lite Mode..."
+# ── Resource Checks & Cleanup ────────────────────────────────────────────────
+info "Performing pre-flight cleanup and resource checks..."
+
+# Cleanup stale/failed pods that might be hogging house-keeping overhead
+kubectl delete pods -n "$NAMESPACE" --field-selector status.phase!=Running --ignore-not-found &>/dev/null || true
+
+# Check absolute disk capacity (ephemeral-storage)
+# We look at the first node's capacity as a proxy for the cluster
+DISK_CAP_KI=$(kubectl get nodes -o jsonpath='{.items[0].status.capacity.ephemeral-storage}' | grep -oE '[0-9]+' | head -n1)
+DISK_CAP_GI=$((DISK_CAP_KI / 1024 / 1024))
+
+if [[ "$DISK_CAP_GI" -lt 15 ]]; then
+  warn "Nodes have small disks (${DISK_CAP_GI}Gi). Enabling Lite Mode..."
+  warn "Skipping Monitoring Stack and limiting Ollama to 1 replica to prevent eviction."
   
-  # Delete evicted/failed pods to free up housekeeping space
-  kubectl delete pods --all -n "$NAMESPACE" --field-selector status.phase=Failed &>/dev/null || true
-  
-  # Reduce Ollama replicas to 1 to save space
+  # Force single replica in deployment to override HPA or defaults
+  kubectl patch deployment ollama -n "$NAMESPACE" -p '{"spec":{"replicas":1}}' &>/dev/null || true
   kubectl patch hpa ollama -n "$NAMESPACE" -p '{"spec":{"minReplicas":1,"maxReplicas":1}}' &>/dev/null || true
   
   SKIP_MONITORING=true
@@ -131,7 +139,7 @@ fi
 
 # ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
 if [[ "$SKIP_MONITORING" == "true" ]]; then
-  info "Skipping Monitoring Stack installation (Lite Mode)"
+  info "Skipping Monitoring Stack installation (Lite Mode active)"
 else
   if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
     info "Installing Monitoring Stack (Prometheus & Grafana)..."
