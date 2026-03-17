@@ -114,16 +114,37 @@ kubectl apply -f "$K8S_DIR/05-app-service.yaml"
 kubectl apply -f "$K8S_DIR/07-ollama-hpa.yaml"
 ok "Chat app and HPA manifests applied"
 
+# ── Optional: Metrics Server Installation & Patch ──────────────────────────────
+info "Checking Metrics Server status..."
+if ! kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+  info "Metrics Server not found. Installing official components..."
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml &>/dev/null || true
+  # Wait for deployment to appear before patching
+  sleep 5
+fi
+
+if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+  info "Patching Metrics Server for insecure TLS (required for AGB Cloud)..."
+  kubectl patch deployment metrics-server -n kube-system --type='json' \
+    -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]' &>/dev/null || true
+  ok "Metrics Server verified/patched"
+fi
+
 # ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
 if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
   info "Installing Monitoring Stack (Prometheus & Grafana)..."
   kubectl create namespace monitoring 2>/dev/null || true
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
   helm repo update 2>/dev/null || true
-  helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
+  
+  # Increased timeout and added --atomic for cleaner failure handling
+  if helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
     -n monitoring \
-    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 5m || true
-  ok "Monitoring stack installed"
+    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 10m --atomic; then
+    ok "Monitoring stack installed"
+  else
+    warn "Monitoring stack installation failed. You may need to run it manually with: helm install..."
+  fi
 else
   info "Monitoring stack already present, skipping installation"
 fi
@@ -136,15 +157,6 @@ ok "Ollama is ready"
 info "Waiting for chat-app pods to be ready..."
 kubectl -n "$NAMESPACE" rollout status deployment/chat-app --timeout=120s
 ok "chat-app is ready"
-
-# ── Optional: Metrics Server Patch ─────────────────────────────────────────────
-info "Checking Metrics Server status..."
-if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
-  info "Patching Metrics Server for insecure TLS (required for AGB Cloud)..."
-  kubectl patch deployment metrics-server -n kube-system --type='json' \
-    -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]' &>/dev/null || true
-  ok "Metrics Server patched"
-fi
 
 # ── Optional: Headlamp Dashboard Patch ───────────────────────────────────────
 info "Checking Headlamp Dashboard status..."
