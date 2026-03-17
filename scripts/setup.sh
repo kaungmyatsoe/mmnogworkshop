@@ -137,10 +137,9 @@ if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
   helm repo update 2>/dev/null || true
   
-  # Increased timeout and added --atomic for cleaner failure handling
   if helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
     -n monitoring \
-    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 10m --atomic; then
+    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 15m --wait; then
     ok "Monitoring stack installed"
   else
     warn "Monitoring stack installation failed. You may need to run it manually with: helm install..."
