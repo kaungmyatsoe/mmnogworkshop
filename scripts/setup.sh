@@ -117,7 +117,14 @@ ok "Chat app and HPA manifests applied"
 # ── Resource Checks ──────────────────────────────────────────────────────────
 if kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="DiskPressure")].status}' | grep -q "True"; then
   warn "Nodes are reporting DiskPressure! This cluster has very small disks."
-  warn "We will skip the Monitoring Stack and attempt a Lite installation."
+  warn "Cleaning up failed pods and switching to Lite Mode..."
+  
+  # Delete evicted/failed pods to free up housekeeping space
+  kubectl delete pods --all -n "$NAMESPACE" --field-selector status.phase=Failed &>/dev/null || true
+  
+  # Reduce Ollama replicas to 1 to save space
+  kubectl patch hpa ollama -n "$NAMESPACE" -p '{"spec":{"minReplicas":1,"maxReplicas":1}}' &>/dev/null || true
+  
   SKIP_MONITORING=true
 fi
 
