@@ -114,18 +114,35 @@ kubectl apply -f "$K8S_DIR/05-app-service.yaml"
 kubectl apply -f "$K8S_DIR/07-ollama-hpa.yaml"
 ok "Chat app and HPA manifests applied"
 
+# ── Resource Checks ──────────────────────────────────────────────────────────
+if kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="DiskPressure")].status}' | grep -q "True"; then
+  warn "Nodes are reporting DiskPressure! This cluster has very small disks."
+  warn "We will skip the Monitoring Stack and attempt a Lite installation."
+  SKIP_MONITORING=true
+fi
+
 # ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
-if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
-  info "Installing Monitoring Stack (Prometheus & Grafana)..."
-  kubectl create namespace monitoring 2>/dev/null || true
-  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
-  helm repo update 2>/dev/null || true
-  helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
-    -n monitoring \
-    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 5m || true
-  ok "Monitoring stack installed"
+if [[ "$SKIP_MONITORING" == "true" ]]; then
+  info "Skipping Monitoring Stack installation (Lite Mode)"
 else
-  info "Monitoring stack already present, skipping installation"
+  if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
+    info "Installing Monitoring Stack (Prometheus & Grafana)..."
+    kubectl create namespace monitoring 2>/dev/null || true
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
+    helm repo update 2>/dev/null || true
+    
+    # Use --atomic to cleanup on failure and --timeout
+    if helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
+      -n monitoring \
+      -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 5m --atomic &>/dev/null; then
+      ok "Monitoring stack installed"
+    else
+      warn "Monitoring stack failed to install. Continuing in Lite Mode..."
+      SKIP_MONITORING=true
+    fi
+  else
+    info "Monitoring stack already present, skipping installation"
+  fi
 fi
 
 # ── Wait for pods ───────────────────────────────────────────────────────────────
@@ -192,15 +209,7 @@ if [[ -n "$HEADLAMP_PORT" ]]; then
 fi
 
 echo ""
-echo -e "${YELLOW}══════════════════════════════════════════════════${NC}"
-echo -e "${YELLOW}  ⚠️   ACTION REQUIRED: PULL THE AI MODEL          ${NC}"
-echo -e "${YELLOW}══════════════════════════════════════════════════${NC}"
-echo ""
-echo "Because we are using temporary storage for this lab,"
-echo "you MUST manually download the model into the cluster:"
-echo ""
-OLLAMA_POD=$(kubectl -n "$NAMESPACE" get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "<POD_NAME>")
-echo -e "  ${CYAN}kubectl -n $NAMESPACE exec -it $OLLAMA_POD -- ollama pull gemma3:1b${NC}"
-echo ""
-echo "Wait for the download to finish, then refresh your browser!"
+# Note: Model pulling is now automated via Lifecycle Hooks!
+echo "The AI model (gemma3:1b) is being pulled automatically in the background."
+echo "Wait 1-2 minutes, then refresh your browser to start chatting!"
 echo ""
