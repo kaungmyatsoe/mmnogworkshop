@@ -57,4 +57,4 @@ graph TD
 
 4.  **AGB Cloud Infrastructure**:
     - High-performance Kubernetes environment.
-    - External access managed via AGB Port Forwarding or native LoadBalancers.
+    - External access managed via AGB Cloud Port Forwarding or native LoadBalancers.
