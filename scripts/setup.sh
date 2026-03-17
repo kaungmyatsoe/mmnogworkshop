@@ -170,13 +170,17 @@ info "Waiting for chat-app pods to be ready..."
 kubectl -n "$NAMESPACE" rollout status deployment/chat-app --timeout=120s
 ok "chat-app is ready"
 
-# ── Optional: Metrics Server Patch ─────────────────────────────────────────────
+# ── Mandatory: Metrics Server Installation ─────────────────────────────────────
 info "Checking Metrics Server status..."
-if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
-  info "Patching Metrics Server for insecure TLS (required for AGB Cloud)..."
+if ! kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+  info "Metrics Server not found. Installing pre-patched version for AGB Cloud..."
+  kubectl apply -f "$K8S_DIR/08-metrics-server.yaml" &>/dev/null || true
+  ok "Metrics Server installed"
+else
+  info "Metrics Server already present. Applying insecure TLS patch (safety)..."
   kubectl patch deployment metrics-server -n kube-system --type='json' \
     -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]' &>/dev/null || true
-  ok "Metrics Server patched"
+  ok "Metrics Server verified/patched"
 fi
 
 # ── Optional: Headlamp Dashboard Patch ───────────────────────────────────────
