@@ -8,7 +8,6 @@ NAMESPACE="ai-workshop"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 K8S_DIR="$ROOT_DIR/k8s"
-SKIP_MONITORING=false
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 info()  { echo -e "${CYAN}[INFO]${NC}  $*"; }
@@ -115,50 +114,18 @@ kubectl apply -f "$K8S_DIR/05-app-service.yaml"
 kubectl apply -f "$K8S_DIR/07-ollama-hpa.yaml"
 ok "Chat app and HPA manifests applied"
 
-# ── Resource Checks & Cleanup ────────────────────────────────────────────────
-info "Performing pre-flight cleanup and resource checks..."
-
-# Cleanup stale/failed pods that might be hogging house-keeping overhead
-kubectl delete pods -n "$NAMESPACE" --field-selector status.phase!=Running --ignore-not-found &>/dev/null || true
-
-# Check absolute disk capacity (ephemeral-storage)
-# We look at the first node's capacity as a proxy for the cluster
-DISK_CAP_KI=$(kubectl get nodes -o jsonpath='{.items[0].status.capacity.ephemeral-storage}' | grep -oE '[0-9]+' | head -n1)
-DISK_CAP_GI=$((DISK_CAP_KI / 1024 / 1024))
-
-if [[ "$DISK_CAP_GI" -lt 15 ]]; then
-  warn "Nodes have small disks (${DISK_CAP_GI}Gi). Enabling Lite Mode..."
-  warn "Skipping Monitoring Stack and limiting Ollama to 1 replica to prevent eviction."
-  
-  # Force single replica in deployment to override HPA or defaults
-  kubectl patch deployment ollama -n "$NAMESPACE" -p '{"spec":{"replicas":1}}' &>/dev/null || true
-  kubectl patch hpa ollama -n "$NAMESPACE" -p '{"spec":{"minReplicas":1,"maxReplicas":1}}' &>/dev/null || true
-  
-  SKIP_MONITORING=true
-fi
-
 # ── Install Monitoring (Optional/Auto) ──────────────────────────────────────────
-if [[ "$SKIP_MONITORING" == "true" ]]; then
-  info "Skipping Monitoring Stack installation (Lite Mode active)"
+if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
+  info "Installing Monitoring Stack (Prometheus & Grafana)..."
+  kubectl create namespace monitoring 2>/dev/null || true
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
+  helm repo update 2>/dev/null || true
+  helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
+    -n monitoring \
+    -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 5m || true
+  ok "Monitoring stack installed"
 else
-  if ! helm list -n monitoring 2>/dev/null | grep -q kube-prom-stack; then
-    info "Installing Monitoring Stack (Prometheus & Grafana)..."
-    kubectl create namespace monitoring 2>/dev/null || true
-    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
-    helm repo update 2>/dev/null || true
-    
-    # Use --atomic to cleanup on failure and --timeout
-    if helm install kube-prom-stack prometheus-community/kube-prometheus-stack \
-      -n monitoring \
-      -f "$K8S_DIR/monitoring/prometheus-values.yaml" --timeout 5m --atomic &>/dev/null; then
-      ok "Monitoring stack installed"
-    else
-      warn "Monitoring stack failed to install. Continuing in Lite Mode..."
-      SKIP_MONITORING=true
-    fi
-  else
-    info "Monitoring stack already present, skipping installation"
-  fi
+  info "Monitoring stack already present, skipping installation"
 fi
 
 # ── Wait for pods ───────────────────────────────────────────────────────────────
@@ -170,17 +137,13 @@ info "Waiting for chat-app pods to be ready..."
 kubectl -n "$NAMESPACE" rollout status deployment/chat-app --timeout=120s
 ok "chat-app is ready"
 
-# ── Mandatory: Metrics Server Installation ─────────────────────────────────────
+# ── Optional: Metrics Server Patch ─────────────────────────────────────────────
 info "Checking Metrics Server status..."
-if ! kubectl get deployment metrics-server -n kube-system &>/dev/null; then
-  info "Metrics Server not found. Installing pre-patched version for AGB Cloud..."
-  kubectl apply -f "$K8S_DIR/08-metrics-server.yaml" &>/dev/null || true
-  ok "Metrics Server installed"
-else
-  info "Metrics Server already present. Applying insecure TLS patch (safety)..."
+if kubectl get deployment metrics-server -n kube-system &>/dev/null; then
+  info "Patching Metrics Server for insecure TLS (required for AGB Cloud)..."
   kubectl patch deployment metrics-server -n kube-system --type='json' \
     -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]' &>/dev/null || true
-  ok "Metrics Server verified/patched"
+  ok "Metrics Server patched"
 fi
 
 # ── Optional: Headlamp Dashboard Patch ───────────────────────────────────────
@@ -217,7 +180,7 @@ if [[ -n "$APP_IP" ]]; then
 else
   warn "LoadBalancer IP pending. Use Public IP with NodePort:"
   info "  URL: http://<EXTERNAL_IP>:8000"
-  info "  AGB Cloud Private Port: $NODE_PORT"
+  info "  CloudStack Private Port: $NODE_PORT"
 fi
 
 HEADLAMP_PORT=$(kubectl get svc kubernetes-dashboard -n kubernetes-dashboard -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || true)
@@ -229,7 +192,15 @@ if [[ -n "$HEADLAMP_PORT" ]]; then
 fi
 
 echo ""
-# Note: Model pulling is now automated via Lifecycle Hooks!
-echo "The AI model (gemma3:1b) is being pulled automatically in the background."
-echo "Wait 1-2 minutes, then refresh your browser to start chatting!"
+echo -e "${YELLOW}══════════════════════════════════════════════════${NC}"
+echo -e "${YELLOW}  ⚠️   ACTION REQUIRED: PULL THE AI MODEL          ${NC}"
+echo -e "${YELLOW}══════════════════════════════════════════════════${NC}"
+echo ""
+echo "Because we are using temporary storage for this lab,"
+echo "you MUST manually download the model into the cluster:"
+echo ""
+OLLAMA_POD=$(kubectl -n "$NAMESPACE" get pod -l app=ollama -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "<POD_NAME>")
+echo -e "  ${CYAN}kubectl -n $NAMESPACE exec -it $OLLAMA_POD -- ollama pull gemma3:1b${NC}"
+echo ""
+echo "Wait for the download to finish, then refresh your browser!"
 echo ""
