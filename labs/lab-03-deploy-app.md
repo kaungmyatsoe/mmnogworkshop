@@ -75,7 +75,7 @@ export APP_IP=$(kubectl -n ai-workshop get svc chat-app -o jsonpath='{.status.lo
 echo "Open: http://$APP_IP:8000"
 ```
 
-> **💡 AGB Cloud / CloudStack Users:** If `EXTERNAL-IP` stays `<pending>`, use the **Public IP** provided by the facilitator and ensure your CloudStack Port Forwarding rule points to the **NodePort 30706**.
+> **💡 AGB Cloud Users:** If `EXTERNAL-IP` stays `<pending>`, use the **Public IP** provided by the facilitator and ensure your AGB Port Forwarding rule points to the **NodePort 30706**.
 >
 > **💡 Local Users:** Use `http://localhost:8000` or the node IP.
 

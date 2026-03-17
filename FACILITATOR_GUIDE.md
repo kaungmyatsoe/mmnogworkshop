@@ -21,7 +21,7 @@ This guide is for the person leading the workshop.
 | **Model Load Slow** | Chat app says "Thinking..." forever | CPU-only inference is slow. Expect 2-3 tokens/second. Ensure student is using `gemma3:1b`. |
 | **Service IP Pending** | `LoadBalancer` has no IP | AGB Cloud may take 1-2 minutes to map the IP. If it fails, use `kubectl port-forward svc/chat-app 8000:8000`. |
 | **Metrics Not Showing** | `kubectl top` fails | Patch metrics-server with insecure TLS: `kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'` |
-| **Grafana Inaccessible**| Dashboard won't load | Ensure Grafana service is patched to `NodePort`. Point CloudStack Private Port to **`31856`**. |
+| **Grafana Inaccessible**| Dashboard won't load | Ensure Grafana service is patched to `NodePort`. Point AGB Private Port to **`31856`**. |
 | **Why Fixed Ports?** | Why `30706` / `31856`?| I have statically assigned these in the YAMLs so they **never change** upon restart. This keeps instructions consistent for all students. |
 | **Windows Errors**   | `./setup.sh` fails     | Windows users MUST use **Git Bash** or **WSL2**. Native PowerShell will not run `.sh` scripts. |
 

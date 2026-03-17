@@ -71,7 +71,7 @@ Since the Cloud LoadBalancer takes time to provision, we will use a **Port-Forwa
 
 ## 🌐 Step 3.1: Cloud Access (Alternative)
 
-If you have a Public IP and configured CloudStack Port Forwarding:
+If you have a Public IP and configured AGB Port Forwarding:
 1.  **Public IP**: `http://<YOUR_PUBLIC_IP>:8000`
 2.  **Private Port**: Ensure your rule points to **NodePort 30706**.
 
@@ -95,7 +95,7 @@ See how your AI app is performing in real-time.
 
 ## 🌐 Step 4.1: Grafana Cloud Access (Alternative)
 
-If you have configured CloudStack Port Forwarding for Grafana:
+If you have configured AGB Port Forwarding for Grafana:
 1.  **Public IP**: `http://<YOUR_PUBLIC_IP>:3000`
 2.  **Private Port**: Ensure your rule points to **NodePort 31856**.
 

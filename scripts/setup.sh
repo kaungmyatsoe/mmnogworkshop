@@ -213,7 +213,7 @@ if [[ -n "$APP_IP" ]]; then
 else
   warn "LoadBalancer IP pending. Use Public IP with NodePort:"
   info "  URL: http://<EXTERNAL_IP>:8000"
-  info "  CloudStack Private Port: $NODE_PORT"
+  info "  AGB Private Port: $NODE_PORT"
 fi
 
 HEADLAMP_PORT=$(kubectl get svc kubernetes-dashboard -n kubernetes-dashboard -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || true)
