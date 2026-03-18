@@ -43,7 +43,7 @@ kubectl -n ai-workshop delete hpa chat-app 2>/dev/null || true
 kubectl -n ai-workshop autoscale deployment chat-app \
   --cpu=60% \
   --min=2 \
-  --max=8
+  --max=5
 ```
 
 Or apply the YAML definition (Recommended):
@@ -89,7 +89,7 @@ kubectl -n ai-workshop get hpa
 Output:
 ```
 NAME           REFERENCE             TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-chat-app-hpa   Deployment/chat-app   5%/60%    2         8         2          30s
+chat-app-hpa   Deployment/chat-app   5%/60%    2         5         2          30s
 ```
 
 ---
