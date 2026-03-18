@@ -7,11 +7,11 @@
 
 ## 1. Before You Start: Cloud Registration
 
-To receive your cluster access credentials, you **must** register your information:
+To receive your cluster access credit, you **must** register your information:
 
 👉 **[Register for AGB Cloud Access](https://forms.office.com/r/pS6QzyU79h)**
 
-Once registered, the facilitator will provide you with your individual `kubeconfig` file.
+Once registered, the facilitator will provide you with your individual lab credit.
 
 ---
 
