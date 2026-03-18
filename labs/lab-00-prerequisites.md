@@ -106,7 +106,31 @@ helm version
 
 ---
 
-## 2.4 Cluster Access — AGB Cloud kubeconfig
+### 2.4 Git
+
+**macOS:**
+```bash
+brew install git
+```
+
+**Linux (Ubuntu/WSL):**
+```bash
+sudo apt update
+sudo apt install git -y
+```
+
+**Windows (Git for Windows):**
+Download and install from [git-scm.com](https://git-scm.com/download/win). This includes **Git Bash**, which is recommended for the workshop.
+
+Verify:
+```bash
+git --version
+# git version 2.x.x
+```
+
+---
+
+## 2.5 Cluster Access — AGB Cloud kubeconfig
 
 Your Kubernetes cluster on **AGB Cloud** is already provisioned. You will receive a
 **kubeconfig file** from the workshop facilitator (e.g., `kubeconfig-<your-name>.yaml`).
