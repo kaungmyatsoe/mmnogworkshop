@@ -5,7 +5,7 @@
 
 ---
 
-## 0. Before You Start: Cloud Registration
+## 1. Before You Start: Cloud Registration
 
 To receive your cluster access credentials, you **must** register your information:
 
@@ -15,7 +15,7 @@ Once registered, the facilitator will provide you with your individual `kubeconf
 
 ---
 
-## 1. Required Tools
+## 2. Required Tools
 
 | Tool | Minimum Version | Purpose |
 |------|----------------|---------|
@@ -26,9 +26,9 @@ Once registered, the facilitator will provide you with your individual `kubeconf
 
 ---
 
-## 2. Install Instructions
+## 3. Install Instructions
 
-### 2.0 WSL2 (Windows Subsystem for Linux) — For Windows Users
+### 3.0 WSL2 (Windows Subsystem for Linux) — For Windows Users
 
 For a smooth workshop experience, we **strongly recommend** using WSL2 with Ubuntu.
 
@@ -48,7 +48,7 @@ For a smooth workshop experience, we **strongly recommend** using WSL2 with Ubun
 
 ---
 
-### 2.1 Docker
+### 3.1 Docker
 
 **macOS / Windows:**  
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop/) and install.
@@ -69,7 +69,7 @@ docker run hello-world
 
 ---
 
-### 2.2 kubectl
+### 3.2 kubectl
 
 **macOS (Homebrew):**
 ```bash
@@ -98,7 +98,7 @@ kubectl version --client
 
 ---
 
-### 2.3 Helm
+### 3.3 Helm
 
 ```bash
 # macOS
@@ -116,7 +116,7 @@ helm version
 
 ---
 
-### 2.4 Git
+### 3.4 Git
 
 **macOS:**
 ```bash
@@ -140,7 +140,7 @@ git --version
 
 ---
 
-## 2.5 Cluster Access — AGB Cloud kubeconfig
+## 3.5 Cluster Access — AGB Cloud kubeconfig
 
 Your Kubernetes cluster on **AGB Cloud** is already provisioned. You will receive a
 **kubeconfig file** from the workshop facilitator (e.g., `kubeconfig-<your-name>.yaml`).
@@ -159,7 +159,7 @@ Keep this file safe — it is your cluster access credential for the workshop.
 
 ---
 
-## 3. Clone the Workshop Repository
+## 4. Clone the Workshop Repository
 
 ```bash
 git clone https://github.com/kaungmyatsoe/mmnogworkshop.git
@@ -168,7 +168,7 @@ cd mmnogworkshop
 
 ---
 
-## 4. Verification Checklist
+## 5. Verification Checklist
 
 Run each command and confirm you see the expected output:
 
