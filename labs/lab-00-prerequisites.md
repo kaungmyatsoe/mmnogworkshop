@@ -18,6 +18,26 @@
 
 ## 2. Install Instructions
 
+### 2.0 WSL2 (Windows Subsystem for Linux) — For Windows Users
+
+For a smooth workshop experience, we **strongly recommend** using WSL2 with Ubuntu.
+
+1.  **Open PowerShell or Command Prompt as Administrator**.
+2.  **Run the installation command**:
+    ```powershell
+    wsl --install
+    ```
+3.  **Restart your computer** when prompted.
+4.  **Set up Ubuntu**: Once restarted, Ubuntu will open and ask for a **username** and **password**.
+5.  **Update Ubuntu**:
+    ```bash
+    sudo apt update && sudo apt upgrade -y
+    ```
+
+> 💡 **Tip:** All following `bash` commands in this workshop should be run inside your **Ubuntu (WSL)** terminal.
+
+---
+
 ### 2.1 Docker
 
 **macOS / Windows:**  
