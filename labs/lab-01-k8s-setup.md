@@ -7,7 +7,7 @@
 
 ## Overview
 
-In this workshop, your Kubernetes cluster is hosted on **AGB Cloud** — a high-performance cloud platform built and operated in the region. Each participant (or team) has been given credentials to access a dedicated cluster.
+In this workshop, your Kubernetes cluster is hosted on [AGB Cloud](https://agbc.cloud) — a high-performance cloud platform built and operated in the region. Each participant (or team) has been given credentials to access a dedicated cluster.
 
 ```
 Your Laptop ──── kubectl ────▶ AGB Cloud K8s Cluster (agbc.cloud)
