@@ -35,7 +35,7 @@ For a smooth workshop experience, we **strongly recommend** using WSL2 with Ubun
 1.  **Open PowerShell or Command Prompt as Administrator**.
 2.  **Run the installation command**:
     ```powershell
-    wsl --install
+    wsl --install Ubuntu-24.04
     ```
 3.  **Restart your computer** when prompted.
 4.  **Set up Ubuntu**: Once restarted, Ubuntu will open and ask for a **username** and **password**.
